@@ -486,66 +486,214 @@ body.dark-theme .profile-image {
     text-decoration: underline; /* Optional: Add underline on hover */
 }
 
-/*!* Dark Theme *!*/
-/*body.dark-theme {*/
-/*    background-color: #1e1e1e;*/
-/*    color: #d4d4d4;*/
-/*}*/
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column; /* Stack sidebar and content on smaller screens */
+    }
 
-/*body.dark-theme .sidebar,*/
-/*body.dark-theme .content,*/
-/*body.dark-theme #hero,*/
-/*body.dark-theme #why-learn,*/
-/*body.dark-theme #about-me,*/
-/*body.dark-theme #course-info,*/
-/*body.dark-theme #testimonials,*/
-/*body.dark-theme .feature {*/
-/*    background-color: #252525;*/
-/*    color: #d4d4d4;*/
-/*    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);*/
-/*}*/
+    .sidebar {
+        width: 100%;
+        margin-bottom: 20px;
+    }
 
-/*body.dark-theme .sidebar h3,*/
-/*body.dark-theme #hero h1,*/
-/*body.dark-theme #why-learn h2,*/
-/*body.dark-theme .profile-details h2,*/
-/*body.dark-theme #course-info h2,*/
-/*body.dark-theme #testimonials h2 {*/
-/*    color: #fdd835; !* Darker Amber *!*/
-/*}*/
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        position: relative; /* For absolute positioning of the toggle button */
+    }
 
-/*body.dark-theme .schedule-item {*/
-/*    border-bottom-color: #555;*/
-/*}*/
+    .nav-links {
+        display: none; /* Initially hide nav links on smaller screens */
+        flex-direction: column;
+        width: 100%;
+    }
 
-/*body.dark-theme footer {*/
-/*    background-color: #000;*/
-/*    color: #fff;*/
-/*}*/
+    .nav-links.active {
+        display: flex;
+    }
 
-/*body.dark-theme .navbar {*/
-/*    background-color: #e65100; !* Darker Amber/Orange *!*/
-/*    color: #fff;*/
-/*}*/
+    .nav-links li {
+        margin-left: 0;
+        margin-bottom: 10px;
+        width: 100%;
+    }
 
-/*body.dark-theme .nav-links li a {*/
-/*    color: #fff;*/
-/*}*/
+    .nav-links li a {
+        display: block;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+    }
 
-/*body.dark-theme .nav-links li a:hover {*/
-/*    background-color: #9c27b0; !* Dark Pink/Purple Hover *!*/
-/*}*/
+    .nav-links li:last-child a {
+        border-bottom: none;
+    }
 
-/*body.dark-theme #theme-toggle {*/
-/*    color: #fff;*/
-/*}*/
+    #theme-toggle {
+        margin-left: 0;
+        margin-top: 10px;
+    }
 
-/*body.dark-theme .profile-details strong,*/
-/*body.dark-theme #course-info strong {*/
-/*    color: #9c27b0; !* Dark Pink/Purple *!*/
-/*}*/
+    /* Hamburger Menu Button */
+    .hamburger {
+        display: block;
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        width: 30px;
+        height: 25px;
+        cursor: pointer;
+        z-index: 10; /* Ensure it's above the nav links */
+    }
 
-/*body.dark-theme .testimonial::before,*/
-/*body.dark-theme .testimonial::after {*/
-/*    color: #9c27b0; !* Dark Pink/Purple *!*/
-/*}*/
+    .hamburger span {
+        display: block;
+        height: 3px;
+        background-color: white;
+        margin-bottom: 5px;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .hamburger span:last-child {
+        margin-bottom: 0;
+    }
+
+    .hamburger.active span:nth-child(1) {
+        transform: translateY(10px) rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+        transform: translateY(-10px) rotate(-45deg);
+    }
+}
+
+/* Tablet View (adjust breakpoint as needed) */
+@media (min-width: 769px) and (max-width: 992px) {
+    .main-content {
+        flex-direction: row; /* Keep sidebar and content side by side */
+    }
+
+    .sidebar {
+        flex: 0 0 30%; /* Adjust sidebar width for tablets */
+    }
+}
+
+/* Contact Page Styles */
+#contact {
+    padding: 40px 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#contact h1 {
+    color: #d98400;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#contact p {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.contact-form {
+    max-width: 600px;
+    margin: 0 auto 30px;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensure padding and border are inside the element's width and height */
+    font-size: 1em;
+}
+
+.form-group textarea {
+    resize: vertical; /* Allow vertical resizing */
+}
+
+.submit-button {
+    background-color: #2e7d32; /* Dark Green */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #1b5e20; /* Darker Green */
+}
+
+.contact-info {
+    text-align: center;
+    color: #777;
+}
+
+.contact-info p {
+    margin-bottom: 10px;
+}
+
+/* Dark Theme for Contact Form */
+body.dark-theme #contact {
+    background-color: #252525;
+    color: #d4d4d4;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
+}
+
+body.dark-theme #contact h1 {
+    color: #fdd835;
+}
+
+body.dark-theme .contact-form {
+    border-color: #555;
+}
+
+body.dark-theme .form-group label {
+    color: #eee;
+}
+
+body.dark-theme .form-group input[type="text"],
+body.dark-theme .form-group input[type="email"],
+body.dark-theme .form-group textarea {
+    background-color: #333;
+    color: #d4d4d4;
+    border-color: #555;
+}
+
+body.dark-theme .submit-button {
+    background-color: #64b5f6; /* Lighter Blue in Dark Theme */
+}
+
+body.dark-theme .submit-button:hover {
+    background-color: #42a5f5;
+}
+
+body.dark-theme .contact-info {
+    color: #bbb;
+}
