@@ -111,11 +111,18 @@ if (contactForm) {
                 }
                 return response.text();
             })
-            .then(async data => {
+            .then(data => {
                 // Show success message from the server
-                responseMessageDiv.textContent = await data; // Display success message
-                responseMessageDiv.classList.add('success');
-                contactForm.reset(); // Clear the form
+                if (data && data.message) {
+                    responseMessageDiv.textContent = data.message; // Display success message
+                    responseMessageDiv.classList.add('success');
+                    contactForm.reset(); // Clear the form
+                } else {
+                    responseMessageDiv.textContent = 'Message sent successfully!'; // Fallback message
+                    responseMessageDiv.classList.add('success');
+                    contactForm.reset(); // Clear the form
+                    console.warn('Unexpected server response:', data);
+                }
             })
             .catch(error => {
                 console.error('Error sending message:', error);
