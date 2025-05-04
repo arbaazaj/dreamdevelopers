@@ -659,6 +659,21 @@ body.dark-theme .profile-image {
     margin-bottom: 10px;
 }
 
+.form-response-message {
+    margin-top: 10px;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.form-response-message.success {
+    color: #4CAF50; /* Green color for success */
+}
+
+.form-response-message.error {
+    color: #f44336; /* Red color for error */
+}
+
 /* Dark Theme for Contact Form */
 body.dark-theme #contact {
     background-color: #252525;
@@ -696,4 +711,12 @@ body.dark-theme .submit-button:hover {
 
 body.dark-theme .contact-info {
     color: #bbb;
+}
+
+body.dark-theme .form-response-message.success {
+    color: #8bc34a; /* Lighter green in dark theme */
+}
+
+body.dark-theme .form-response-message.error {
+    color: #e57373; /* Lighter red in dark theme */
 }

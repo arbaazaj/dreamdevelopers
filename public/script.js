@@ -54,6 +54,11 @@ if (contactForm) {
         const emailInput = document.getElementById('email');
         const messageInput = document.getElementById('message');
         const submitButton = contactForm.querySelector('.submit-button');
+        const responseMessageDiv = contactForm.querySelector('.form-response-message');
+
+        // Clear any previous response message
+        responseMessageDiv.textContent = '';
+        responseMessageDiv.classList.remove('success', 'error');
 
         // Disable the submit button to prevent multiple submissions
         submitButton.disabled = true;
@@ -61,26 +66,30 @@ if (contactForm) {
 
         // Basic client-side validation
         if (!nameInput.value.trim()) {
-            alert('Please enter your name.');
+            responseMessageDiv.textContent = 'Please enter your name.';
+            responseMessageDiv.classList.add('error');
             submitButton.disabled = false;
             submitButton.textContent = 'Send Message';
             return;
         }
 
         if (!emailInput.value.trim()) {
-            alert('Please enter your email address.');
+            responseMessageDiv.textContent = 'Please enter your email address.';
+            responseMessageDiv.classList.add('error');
             submitButton.disabled = false;
             submitButton.textContent = 'Send Message';
             return;
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
-            alert('Please enter a valid email address.');
+            responseMessageDiv.textContent = 'Please enter a valid email address.';
+            responseMessageDiv.classList.add('error');
             submitButton.disabled = false;
             submitButton.textContent = 'Send Message';
             return;
         }
 
         if (!messageInput.value.trim()) {
-            alert('Please enter your message.');
+            responseMessageDiv.textContent = 'Please enter your message.';
+            responseMessageDiv.classList.add('error');
             submitButton.disabled = false;
             submitButton.textContent = 'Send Message';
             return;
@@ -102,13 +111,16 @@ if (contactForm) {
                 }
                 return response.text();
             })
-            .then(data => {
-                alert(data); // Show success message from the server
+            .then(async data => {
+                // Show success message from the server
+                responseMessageDiv.textContent = await data; // Display success message
+                responseMessageDiv.classList.add('success');
                 contactForm.reset(); // Clear the form
             })
             .catch(error => {
                 console.error('Error sending message:', error);
-                alert('Failed to send message. Please try again later.');
+                responseMessageDiv.textContent = 'Failed to send message. Please try again later.';
+                responseMessageDiv.classList.add('error');
             })
             .finally(() => {
                 // Re-enable the submit button regardless of success or failure
