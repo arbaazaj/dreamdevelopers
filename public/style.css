@@ -181,21 +181,51 @@ p, li, small, label, button {
 }
 
 /* Hero Section */
+/* Hero Section */
 #hero {
     text-align: center;
-    padding: 40px 20px;
-    background-color: #fce4ec; /* Light Pink */
+    padding: 80px 20px; /* Increased padding for better spacing */
+    background-color: #fce4ec; /* Fallback background color */
     border-radius: 5px;
     margin-bottom: 20px;
+    color: white; /* Default text color on the image */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Improve text readability */
+    position: relative; /* For overlay positioning */
+    background-image: url('images/flutter_banner_bg.jpg'); /* Path to your image */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent black overlay */
+    z-index: 1; /* Below the text content */
+}
+
+#hero > * {
+    position: relative; /* Ensure text and button are above the overlay */
+    z-index: 2;
 }
 
 #hero h1 {
-    color: #d84315; /* Dark Pink/Red */
-    margin-bottom: 10px;
+    color: white; /* Ensure heading is white */
+    margin-bottom: 15px;
+    font-size: 2.5em; /* Slightly larger heading */
+}
+
+#hero p {
+    font-size: 1.2em;
+    margin-bottom: 25px;
 }
 
 .enroll-button {
-    background-color: #2e7d32; /* Dark Green */
+    background-color: #2e7d32;
     color: white;
     padding: 15px 30px;
     border: none;
@@ -206,7 +236,30 @@ p, li, small, label, button {
 }
 
 .enroll-button:hover {
-    background-color: #1b5e20; /* Darker Green */
+    background-color: #1b5e20;
+}
+
+/* Dark Theme Hero Section */
+body.dark-theme #hero {
+    background-color: #252525; /* Dark fallback */
+    color: #d4d4d4;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+body.dark-theme #hero::before {
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly darker overlay for dark theme */
+}
+
+body.dark-theme #hero h1 {
+    color: #fdd835; /* Darker Amber */
+}
+
+body.dark-theme .enroll-button {
+    background-color: #64b5f6; /* Lighter Blue in Dark Theme */
+}
+
+body.dark-theme .enroll-button:hover {
+    background-color: #42a5f5;
 }
 
 /* Why Learn Section */

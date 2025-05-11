@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact - Dream Developers</title>
+    <title>Register - Dream Developers</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
+    <link rel="stylesheet" href="auth.css"> </head>
 <body>
 <div class="container">
     <header>
@@ -32,13 +32,12 @@
     </header>
 
     <main class="content">
-        <section id="contact">
-            <h1>Contact Us</h1>
-            <p>Get in touch with us for any inquiries or support.</p>
-            <div class="contact-form">
-                <form action="#" method="post">
+        <section id="register">
+            <h1>Student Registration</h1>
+            <div class="auth-form">
+                <form action="/register" method="post">
                     <div class="form-group">
-                        <label for="name">Name:</label>
+                        <label for="name">Full Name:</label>
                         <input type="text" id="name" name="name" required>
                     </div>
                     <div class="form-group">
@@ -46,16 +45,16 @@
                         <input type="email" id="email" name="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="message">Message:</label>
-                        <textarea id="message" name="message" rows="5" required></textarea>
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
                     </div>
-                    <button type="submit" class="submit-button">Send Message</button>
-                    <div class="form-response-message"></div>
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm Password:</label>
+                        <input type="password" id="confirm_password" name="confirm_password" required>
+                    </div>
+                    <button type="submit" class="submit-button">Register</button>
+                    <p class="form-footer">Already have an account? <a href="/login">Login here</a></p>
                 </form>
-            </div>
-            <div class="contact-info">
-                <p><strong>Email:</strong> info@dreamdevelopers.dev</p>
-                <p><strong>Address:</strong> Jaunpur, Uttar Pradesh, India</p>
             </div>
         </section>
     </main>

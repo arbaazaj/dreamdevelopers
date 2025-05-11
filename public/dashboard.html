@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact - Dream Developers</title>
+    <title>Dashboard - Dream Developers</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -21,9 +21,9 @@
                 <li><a href="/">Home</a></li>
                 <li><a href="/courses">Courses</a></li>
                 <li><a href="/schedule">Schedule</a></li>
-                <li><a href="/login">Login</a></li>
-                <li><a href="/register">Register</a></li>
                 <li><a href="/contact">Contact</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/logout">Logout</a></li>
             </ul>
             <button id="theme-toggle">
                 <i class="fas fa-sun"></i>
@@ -32,30 +32,30 @@
     </header>
 
     <main class="content">
-        <section id="contact">
-            <h1>Contact Us</h1>
-            <p>Get in touch with us for any inquiries or support.</p>
-            <div class="contact-form">
-                <form action="#" method="post">
-                    <div class="form-group">
-                        <label for="name">Name:</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message:</label>
-                        <textarea id="message" name="message" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="submit-button">Send Message</button>
-                    <div class="form-response-message"></div>
-                </form>
-            </div>
-            <div class="contact-info">
-                <p><strong>Email:</strong> info@dreamdevelopers.dev</p>
-                <p><strong>Address:</strong> Jaunpur, Uttar Pradesh, India</p>
+        <section id="dashboard">
+            <h1>Student Dashboard</h1>
+            <p>Welcome to your personal dashboard!</p>
+            <div class="dashboard-widgets">
+                <div class="widget">
+                    <h3>Enrolled Courses</h3>
+                    <ul>
+                        <li>Beginner Flutter</li>
+                        <li>Intermediate Flutter</li>
+                    </ul>
+                    <a href="/courses">View All Courses</a>
+                </div>
+                <div class="widget">
+                    <h3>Upcoming Schedule</h3>
+                    <ul>
+                        <li>Monday: Introduction to Flutter (7:00 PM IST)</li>
+                        <li>Wednesday: State Management in Flutter (7:00 PM IST)</li>
+                    </ul>
+                    <a href="/schedule">View Full Schedule</a>
+                </div>
+                <div class="widget">
+                    <h3>Account Settings</h3>
+                    <p><a href="#">Edit Profile</a></p>
+                </div>
             </div>
         </section>
     </main>

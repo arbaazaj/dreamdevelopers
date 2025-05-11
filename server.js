@@ -5,6 +5,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({extended: false}));
 
 // Root endpoint
 app.get('/', (req, res) => {
@@ -26,9 +27,49 @@ app.get('/contact', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'contact.html'));
 });
 
+// Login page endpoint
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// Register page endpoint
+app.get('/register', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'register.html'));
+});
+
+// Dashboard page endpoint
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+// Login post request
+app.post('/login', (req, res) => {
+    const {email, password} = req.body;
+    // Here you would typically check the username and password against a database
+    if (email === 'admin@dd.dev' && password === 'password') {
+        res.redirect('/dashboard');
+    } else {
+        res.send('Invalid username or password.');
+    }
+});
+
+// Register post request
+app.post('/register', (req, res) => {
+    const {username, password} = req.body;
+    // Here you would typically save the new user to a database
+    res.send('Registration successful!');
+    res.redirect('/dashboard');
+});
+
+// Logout route
+app.get('/logout', (req, res) => {
+    // Here you would typically destroy the session or token
+    res.redirect('/');
+});
+
 // Send-email route for contact form
-app.post('/send-email', express.urlencoded({ extended: false}), (req, res) => {
-    const { name, email, message } = req.body;
+app.post('/send-email', express.urlencoded({extended: false}), (req, res) => {
+    const {name, email, message} = req.body;
 
     // Configure nodemailer with your email service details
     const transporter = nodemailer.createTransport({
@@ -58,7 +99,7 @@ app.post('/send-email', express.urlencoded({ extended: false}), (req, res) => {
         }
     });
 
-    res.json({ message: 'Email sent successfully!' });
+    res.json({message: 'Email sent successfully!'});
 });
 
 app.listen(port, () => {
