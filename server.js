@@ -5,7 +5,7 @@ const path = require('path');
 //const cookieParser = require('cookie-parser');
 //const {v4: uuidv4} = require('uuid');
 
-const nodemailer = require("nodemailer");
+//const nodemailer = require("nodemailer");
 const app = express();
 //const port = process.env.PORT || 3000;
 
