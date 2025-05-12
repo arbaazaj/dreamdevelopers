@@ -7,7 +7,7 @@ const path = require('path');
 
 const nodemailer = require("nodemailer");
 const app = express();
-const port = process.env.PORT || 3000;
+//const port = process.env.PORT || 3000;
 
 // Creating session
 const sessions = {};
@@ -179,6 +179,6 @@ app.post('/send-email', express.urlencoded({extended: false}), (req, res) => {
     res.json({message: 'Email sent successfully!'});
 });
 
-app.listen(port, () => {
-    console.log(`Sever is running at http://localhost:${port}`);
+app.listen(3306, () => {
+    console.log(`Sever is running at http://localhost:3306`);
 });
