@@ -179,6 +179,6 @@ app.post('/send-email', express.urlencoded({extended: false}), (req, res) => {
     res.json({message: 'Email sent successfully!'});
 });
 
-app.listen(3306, () => {
-    console.log(`Sever is running at http://localhost:3306`);
+app.listen(3000, () => {
+    console.log(`Sever is running at http://localhost:3000`);
 });
