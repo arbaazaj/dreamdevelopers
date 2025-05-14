@@ -22,12 +22,73 @@
                 <span></span>
             </div>
             <ul class="nav-links">
-                <li><a href="/">Home</a></li>
-                <li><a href="/courses">Courses</a></li>
-                <li><a href="/schedule">Schedule</a></li>
-                <li><a href="/login">Login</a></li>
-                <li><a href="/register">Register</a></li>
-                <li><a href="/contact">Contact</a></li>
+                <script>
+                    fetch('/api/user/status')
+                        .then(response => response.json())
+                        .then(data => {
+                            const loggedIn = data.loggedIn;
+                            const navLinksContainer = document.querySelector('.nav-links');
+                            navLinksContainer.innerHTML = ''; // Clear existing links
+
+                            const homeLi = document.createElement('li');
+                            const homeLink = document.createElement('a');
+                            homeLink.href = '/';
+                            homeLink.textContent = 'Home';
+                            homeLi.appendChild(homeLink);
+                            navLinksContainer.appendChild(homeLi);
+
+                            const coursesLi = document.createElement('li');
+                            const coursesLink = document.createElement('a');
+                            coursesLink.href = '/courses';
+                            coursesLink.textContent = 'Courses';
+                            coursesLi.appendChild(coursesLink);
+                            navLinksContainer.appendChild(coursesLi);
+
+                            const scheduleLi = document.createElement('li');
+                            const scheduleLink = document.createElement('a');
+                            scheduleLink.href = '/schedule';
+                            scheduleLink.textContent = 'Schedule';
+                            scheduleLi.appendChild(scheduleLink);
+                            navLinksContainer.appendChild(scheduleLi);
+
+                            const contactLi = document.createElement('li');
+                            const contactLink = document.createElement('a');
+                            contactLink.href = '/contact';
+                            contactLink.textContent = 'Contact';
+                            contactLi.appendChild(contactLink);
+                            navLinksContainer.appendChild(contactLi);
+
+                            if (loggedIn) {
+                                const dashboardLi = document.createElement('li');
+                                const dashboardLink = document.createElement('a');
+                                dashboardLink.href = '/dashboard';
+                                dashboardLink.textContent = 'Dashboard';
+                                dashboardLi.appendChild(dashboardLink);
+                                navLinksContainer.appendChild(dashboardLi);
+
+                                const logoutLi = document.createElement('li');
+                                const logoutLink = document.createElement('a');
+                                logoutLink.href = '/logout';
+                                logoutLink.textContent = 'Logout';
+                                logoutLi.appendChild(logoutLink);
+                                navLinksContainer.appendChild(logoutLi);
+                            } else {
+                                const loginLi = document.createElement('li');
+                                const loginLink = document.createElement('a');
+                                loginLink.href = '/login';
+                                loginLink.textContent = 'Login';
+                                loginLi.appendChild(loginLink);
+                                navLinksContainer.appendChild(loginLi);
+
+                                const registerLi = document.createElement('li');
+                                const registerLink = document.createElement('a');
+                                registerLink.href = '/register';
+                                registerLink.textContent = 'Register';
+                                registerLi.appendChild(registerLink);
+                                navLinksContainer.appendChild(registerLi);
+                            }
+                        });
+                </script>
             </ul>
             <button id="theme-toggle">
                 <i class="fas fa-sun"></i>

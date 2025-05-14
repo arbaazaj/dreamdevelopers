@@ -136,3 +136,116 @@ if (contactForm) {
             });
     });
 }
+
+// Function to handle login form submission
+const loginForm = document.querySelector('#login .auth-form form');
+if (loginForm) {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('form-response-message');
+    loginForm.insertBefore(messageDiv, loginForm.querySelector('.submit-button').nextSibling);
+
+    loginForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const submitButton = loginForm.querySelector('.submit-button');
+
+        messageDiv.textContent = '';
+        messageDiv.classList.remove('success', 'error');
+        submitButton.disabled = true;
+        submitButton.textContent = 'Logging In...';
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `email=${encodeURIComponent(emailInput.value)}&password=${encodeURIComponent(passwordInput.value)}`,
+            });
+
+            const data = await response.json();
+            console.log('Login response:', data); // Log the response for debugging
+
+            if (response.ok) {
+                messageDiv.textContent = data.message;
+                messageDiv.classList.add('success');
+                if (data.redirect) {
+                    window.location.href = data.redirect; // Redirect on successful login
+                }
+            } else {
+                messageDiv.textContent = data.message;
+                messageDiv.classList.add('error');
+            }
+        } catch (error) {
+            console.log('Login error:', error); // Log the error for debugging
+            messageDiv.textContent = 'Login failed. Please try again later.';
+            messageDiv.classList.add('error');
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Login';
+        }
+    });
+}
+
+// Function to handle registration form submission
+const registrationForm = document.querySelector('#register .auth-form form');
+if (registrationForm) {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('form-response-message');
+    registrationForm.insertBefore(messageDiv, registrationForm.querySelector('.submit-button').nextSibling);
+
+    registrationForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        const submitButton = registrationForm.querySelector('.submit-button');
+
+        messageDiv.textContent = '';
+        messageDiv.classList.remove('success', 'error');
+        submitButton.disabled = true;
+        submitButton.textContent = 'Registering...';
+
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            messageDiv.textContent = 'Passwords do not match.';
+            messageDiv.classList.add('error');
+            submitButton.disabled = false;
+            submitButton.textContent = 'Register';
+            return;
+        }
+
+        try {
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `name=${encodeURIComponent(nameInput.value)}&email=${encodeURIComponent(emailInput.value)}&password=${encodeURIComponent(passwordInput.value)}&confirm_password=${encodeURIComponent(confirmPasswordInput.value)}`,
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                messageDiv.textContent = data.message;
+                messageDiv.classList.add('success');
+                if (data.redirect) {
+                    setTimeout(() => {
+                        window.location.href = data.redirect; // Redirect after a short delay
+                    }, 1500);
+                }
+            } else {
+                messageDiv.textContent = data.message;
+                messageDiv.classList.add('error');
+            }
+        } catch (error) {
+            console.error('Registration error:', error);
+            messageDiv.textContent = 'Registration failed. Please try again later.';
+            messageDiv.classList.add('error');
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Register';
+        }
+    });
+}
