@@ -52,6 +52,22 @@ app.get('/api/user/status', (req, res) => {
     res.json({ loggedIn: isLoggedIn(req) });
 });
 
+app.get('/api/user/data', requireLogin, (req, res) => {
+    const userId = req.user.id;
+
+    pool.query('SELECT name FROM students WHERE id = ?', [userId], (error, results) => {
+        if (error) {
+            console.error('Error fetching user data:', error);
+            return res.status(500).json({ error: 'Error fetching user data.' });
+        }
+        if (results.length > 0) {
+            res.json({ name: results[0].name });
+        } else {
+            res.status(404).json({ error: 'User not found.' });
+        }
+    });
+});
+
 // Courses page endpoint
 app.get('/courses', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'courses.html'), { loggedIn: isLoggedIn(req) });
