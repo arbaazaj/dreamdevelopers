@@ -16,6 +16,7 @@ const sessions = {};
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(express.json());
 
 // MySQL connection
 const pool = mysql.createPool({
@@ -29,7 +30,7 @@ const pool = mysql.createPool({
 // Middleware to check if user is logged in
 const requireLogin = (req, res, next) => {
     const sessionId = req.cookies && req.cookies.sessionId;
-    if (sessionId || sessions[sessionId]) {
+    if (sessionId && sessions && sessions[sessionId] && sessions[sessionId].user) {
         req.user = sessions[sessionId].user;
         next();
     } else {
@@ -55,18 +56,109 @@ app.get('/api/user/status', (req, res) => {
 app.get('/api/user/data', requireLogin, (req, res) => {
     const userId = req.user.id;
 
-    pool.query('SELECT name FROM students WHERE id = ?', [userId], (error, results) => {
+    pool.query(
+        `SELECT
+            s.name,
+            e.course_id,
+            c.title AS course_title,
+            c.category AS course_category,
+            sch.day,
+            sch.time
+        FROM students s
+        LEFT JOIN enrollments e ON s.id = e.student_id
+        LEFT JOIN courses c ON e.course_id = c.id
+        LEFT JOIN schedules sch ON c.id = sch.course_id
+        WHERE s.id = ?`,
+        [userId],
+        (error, results) => {
+            if (error) {
+                console.error('Error fetching user data:', error);
+                return res.status(500).json({ error: 'Error fetching user data.' });
+            }
+
+            if (results.length > 0) {
+                const name = results[0].name;
+                let enrolledCourses = [];
+                const courseMap = new Map(); // Use a Map to store courses and their schedules
+
+                results.forEach(row => {
+                    if (row.course_id) { // Check if the user is enrolled in any course
+                        if (!courseMap.has(row.course_id)) {
+                            courseMap.set(row.course_id, {
+                                courseId: row.course_id,
+                                courseTitle: row.course_title,
+                                courseCategory: row.course_category,
+                                schedules: []
+                            });
+                        }
+                        // Push schedules into the array.
+                        courseMap.get(row.course_id).schedules.push({ day: row.day, time: row.time });
+                    }
+                });
+
+                // Convert the map to the array
+                enrolledCourses = Array.from(courseMap.values());
+                res.json({ name: name, enrolledCourses: enrolledCourses });
+            } else {
+                res.json({ name: 'Student', enrolledCourses: [] }); // Or handle this as you see fit
+            }
+        }
+    );
+});
+
+// Courses API endpoint
+app.get('/api/courses', (req, res) => {
+    pool.query('SELECT id, title, description, category, logo FROM courses', (error, results) => { // Include logo
         if (error) {
-            console.error('Error fetching user data:', error);
-            return res.status(500).json({ error: 'Error fetching user data.' });
+            console.error('Error fetching courses:', error);
+            return res.status(500).json({ message: 'Failed to fetch courses' });
         }
-        if (results.length > 0) {
-            res.json({ name: results[0].name });
-        } else {
-            res.status(404).json({ error: 'User not found.' });
-        }
+        res.json(results);
     });
 });
+
+// Enroll in course route
+app.post('/api/enroll', requireLogin, (req, res) => {
+    const { courseId } = req.body;
+    const studentId = req.user.id;
+    const enrollmentId = uuidv4();
+
+    pool.query('INSERT INTO enrollments (id, student_id, course_id) VALUES (?, ?, ?)', [enrollmentId, studentId, courseId], (error) => {
+        if (error) {
+            console.error('Error enrolling in course:', error);
+            if (error.code === 'ER_DUP_ENTRY') {
+                return res.status(400).json({ message: 'You are already enrolled in this course.' });
+            }
+            return res.status(500).json({ message: 'Failed to enroll in course.' });
+        }
+        res.json({ message: 'Successfully enrolled in course.' });
+    });
+});
+
+app.get('/api/dashboard', requireLogin, (req, res) => {
+    const studentId = req.user.id;
+    const query = `
+        SELECT
+            c.title,
+            c.description,
+            e.enrollment_date
+        FROM
+            enrollments e
+        JOIN
+            courses c ON e.course_id = c.id
+        WHERE
+            e.student_id = ?
+    `;
+
+    pool.query(query, [studentId], (error, results) => {
+        if (error) {
+            console.error('Error fetching dashboard data:', error);
+            return res.status(500).json({ message: 'Failed to fetch dashboard data' });
+        }
+        res.json(results);
+    });
+});
+
 
 // Courses page endpoint
 app.get('/courses', (req, res) => {

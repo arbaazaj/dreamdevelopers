@@ -97,41 +97,52 @@
         <section id="dashboard">
             <h1>Student Dashboard</h1>
             <p id="welcome-message"><i class="fas fa-wave-hand" style="margin-right: 10px;"></i>Welcome, Student to your personal dashboard!</p>
-            <div class="dashboard-widgets">
-                <div class="widget">
-                    <h3>Enrolled Courses</h3>
-                    <ul>
-                        <li>Beginner Flutter</li>
-                        <li>Intermediate Flutter</li>
-                    </ul>
-                    <a href="/courses">View All Courses</a>
+            <section id="enrolled-courses">
+                <h2>Your Enrolled Courses</h2>
+                <div class="course-list">
                 </div>
-                <div class="widget">
-                    <h3>Upcoming Schedule</h3>
-                    <ul>
-                        <li>Monday: Introduction to Flutter (7:00 PM IST)</li>
-                        <li>Wednesday: State Management in Flutter (7:00 PM IST)</li>
-                    </ul>
-                    <a href="/schedule">View Full Schedule</a>
-                </div>
-                <div class="widget">
-                    <h3>Account Settings</h3>
-                    <p><a href="#">Edit Profile</a></p>
-                </div>
-            </div>
+            </section>
             <script>
-                const welcomeMessageElement = document.getElementById('welcome-message');
-                fetch('/api/user/data')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data && data.name) {
-                            welcomeMessageElement.innerHTML = `<i class="fas fa-wave-hand" style="margin-right: 10px;"></i> Welcome, <span style="font-weight: bold; color: #2e7d32;">${data.name}</span> to your personal dashboard!`;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching user data:', error);
-                        welcomeMessageElement.innerHTML = `<i class="fas fa-wave-hand" style="margin-right: 10px;"></i> Welcome, <span style="font-weight: bold;">Student</span> to your personal dashboard!`; // Fallback message
-                    });
+                document.addEventListener('DOMContentLoaded', () => {
+                    const welcomeMessageElement = document.getElementById('welcome-message');
+                    const courseListDiv = document.querySelector('#enrolled-courses .course-list');
+
+                    fetch('/api/user/data')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (welcomeMessageElement) {
+                                welcomeMessageElement.textContent = `Welcome, ${data.name} to your personal dashboard!`;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching user data:', error);
+                        });
+
+                    fetch('/api/dashboard')
+                        .then(response => response.json())
+                        .then(enrolledCourses => {
+                            if (enrolledCourses.length === 0) {
+                                courseListDiv.innerHTML = '<p>You are not currently enrolled in any courses.</p> <a href="/courses" class="enroll-button">View Courses</a>';
+                                return;
+                            }
+
+                            enrolledCourses.forEach(course => {
+                                const courseCard = document.createElement('div');
+                                courseCard.classList.add('dashboard-course-card');
+                                const enrollmentDate = new Date(course.enrollment_date).toLocaleDateString();
+                                courseCard.innerHTML = `
+                                    <h3 class="course-title">${course.title}</h3>
+                                    <p class="course-description">${course.description}</p>
+                                    <p class="enrollment-date">Enrolled on: ${enrollmentDate}</p>
+                                `;
+                                courseListDiv.appendChild(courseCard);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching enrolled courses:', error);
+                            courseListDiv.innerHTML = '<p>Failed to load enrolled courses.</p>';
+                        });
+                });
             </script>
         </section>
     </main>

@@ -95,31 +95,90 @@
     <main class="content">
         <section id="courses">
             <h1>Our Courses</h1>
-            <p>We offer a variety of Flutter development courses to help you achieve your goals.</p>
+            <div class="course-filter">
+                <button data-category="all">All</button>
+                <button data-category="Flutter">Flutter</button>
+                <button data-category="Programming Language">Programming Language</button>
+                <button data-category="Web Development">Web Development</button>
+            </div>
             <div class="course-list">
-                <div class="course-card">
-                    <h3>Beginner Flutter</h3>
-                    <p>Learn the basics of Flutter and build your first app.</p>
-                    <p>Duration: 8 Weeks</p>
-                    <p>Fee: ₹4999</p>
-                    <a href="#" class="enroll-button">Enroll Now</a>
-                </div>
-                <div class="course-card">
-                    <h3>Intermediate Flutter</h3>
-                    <p>Dive deeper into state management, UI design, and animations.</p>
-                    <p>Duration: 10 Weeks</p>
-                    <p>Fee: ₹6999</p>
-                    <a href="#" class="enroll-button">Enroll Now</a>
-                </div>
-                <div class="course-card">
-                    <h3>Advanced Flutter</h3>
-                    <p>Master advanced concepts like API integration, testing, and deployment.</p>
-                    <p>Duration: 12 Weeks</p>
-                    <p>Fee: ₹8999</p>
-                    <a href="#" class="enroll-button">Enroll Now</a>
-                </div>
             </div>
         </section>
+        <script>
+            const courseList = document.querySelector('.course-list');
+            const courseFilter = document.querySelector('.course-filter');
+
+            let coursesData = []; // Store courses data globally
+            let currentCategory = 'all';
+
+            function displayCourses(courses) {
+                courseList.innerHTML = ''; // Clear previous courses
+                const filteredCourses = currentCategory === 'all' ? courses : courses.filter(course => course.category === currentCategory);
+
+                filteredCourses.forEach(course => {
+                    const courseDiv = document.createElement('div');
+                    courseDiv.classList.add('course-card');
+                    courseDiv.innerHTML = `
+                <div class="course-header">
+                    <img src="${course.logo}" alt="${course.title} Logo" class="course-logo">
+                    <h3 class="course-title">${course.title}</h3>
+                </div>
+                <p class="course-description">${course.description}</p>
+                <p class="course-category">Category: ${course.category}</p>
+                <button class="enroll-button" data-course-id="${course.id}">Enroll Now</button>
+            `;
+                    courseList.appendChild(courseDiv);
+                });
+
+                // Attach event listeners to the enroll buttons
+                const enrollButtons = document.querySelectorAll('.enroll-button');
+                enrollButtons.forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const courseId = event.target.dataset.courseId;
+                        fetch('/api/enroll', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ courseId: courseId }),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                alert(data.message);
+                                window.location.href = '/dashboard';
+                            })
+                            .catch(error => {
+                                console.error('Error enrolling:', error);
+                                alert('Failed to enroll. Please try again.');
+                            });
+                    });
+                });
+            }
+
+            fetch('/api/courses')
+                .then(response => response.json())
+                .then(data => {
+                    coursesData = data; // Store the data
+                    displayCourses(coursesData); // Initial display
+                })
+                .catch(error => {
+                    console.error('Error fetching courses:', error);
+                    courseList.innerHTML = '<p>Failed to load courses.</p>';
+                });
+
+            // Event listener for category filter
+            courseFilter.addEventListener('click', (event) => {
+                if (event.target.tagName === 'BUTTON') {
+                    currentCategory = event.target.dataset.category;
+                    displayCourses(coursesData);
+                    // Update active button style
+                    document.querySelectorAll('.course-filter button').forEach(button => {
+                        button.classList.remove('active');
+                    });
+                    event.target.classList.add('active');
+                }
+            });
+        </script>
     </main>
 
     <footer>
