@@ -1,0 +1,114 @@
+/* theme-dark.css */
+body.dark-theme {
+    background-color: #1a1a1a;
+    color: #eee;
+}
+
+body.dark-theme header {
+    background-color: #333;
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme header a {
+    color: #fff;
+}
+
+body.dark-theme header a:hover {
+    opacity: 0.8;
+}
+
+body.dark-theme #enrolled-courses h2 {
+    color: #ddd;
+    border-bottom-color: #555;
+}
+
+body.dark-theme .dashboard-course-card {
+    background-color: #2a2a2a;
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.05);
+    color: #eee;
+}
+
+body.dark-theme .dashboard-course-card:hover {
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme .dashboard-course-card .course-title {
+    color: #eee;
+}
+
+body.dark-theme .dashboard-course-card .course-description {
+    color: #ccc;
+}
+
+body.dark-theme .dashboard-course-card .enrollment-date {
+    color: #bbb;
+}
+
+body.dark-theme .dashboard-course-card .schedule-title {
+    color: #ddd;
+}
+
+body.dark-theme .dashboard-course-card ul li {
+    color: #ccc;
+}
+
+body.dark-theme .dashboard-course-card p {
+    color: #ccc;
+}
+
+body.dark-theme footer {
+    background-color: #222;
+    color: #eee;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .course-filter button {
+    background-color: #333;
+    color: #eee;
+    border-color: #555;
+}
+
+body.dark-theme .course-filter button.active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+body.dark-theme .course-filter button:hover {
+    background-color: #555;
+    border-color: #777;
+}
+
+body.dark-theme .course-card {
+    background-color: #2a2a2a;
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.05);
+    color: #eee;
+}
+
+body.dark-theme .course-card:hover {
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme .course-card .course-title {
+    color: #eee;
+}
+
+body.dark-theme .course-card .course-description {
+    color: #ccc;
+}
+
+body.dark-theme .course-card .course-category,
+body.dark-theme .course-card .course-categories {
+    color: #bbb;
+}
+
+body.dark-theme .course-card .enroll-button {
+    background-color: #218838;
+    color: #fff;
+    border-color: #218838;
+}
+
+body.dark-theme .course-card .enroll-button:hover {
+    background-color: #1e7e34;
+}

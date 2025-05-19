@@ -99,13 +99,13 @@
             <p id="welcome-message"><i class="fas fa-wave-hand" style="margin-right: 10px;"></i>Welcome, Student to your personal dashboard!</p>
             <section id="enrolled-courses">
                 <h2>Your Enrolled Courses</h2>
-                <div class="course-list">
+                <div class="course-grid">
                 </div>
             </section>
             <script>
                 document.addEventListener('DOMContentLoaded', () => {
                     const welcomeMessageElement = document.getElementById('welcome-message');
-                    const courseListDiv = document.querySelector('#enrolled-courses .course-list');
+                    const courseGridDiv = document.querySelector('#enrolled-courses .course-grid');
 
                     fetch('/api/user/data')
                         .then(response => response.json())
@@ -122,7 +122,7 @@
                         .then(response => response.json())
                         .then(enrolledCourses => {
                             if (enrolledCourses.length === 0) {
-                                courseListDiv.innerHTML = '<p>You are not currently enrolled in any courses.</p> <a href="/courses" class="enroll-button">View Courses</a>';
+                                courseGridDiv.innerHTML = '<p>You are not currently enrolled in any courses.</p> <a href="/courses" class="enroll-button">View Courses</a>';
                                 return;
                             }
 
@@ -130,17 +130,29 @@
                                 const courseCard = document.createElement('div');
                                 courseCard.classList.add('dashboard-course-card');
                                 const enrollmentDate = new Date(course.enrollment_date).toLocaleDateString();
+                                let scheduleHTML = '';
+                                if (course.schedules && course.schedules.length > 0) {
+                                    scheduleHTML = '<p class="schedule-title">Schedule:</p><ul>';
+                                    course.schedules.forEach(schedule => {
+                                        scheduleHTML += `<li>${schedule}</li>`;
+                                    });
+                                    scheduleHTML += '</ul>';
+                                } else {
+                                    scheduleHTML = '<p class="schedule-title">Schedule:</p><p>No schedule available.</p>';
+                                }
+
                                 courseCard.innerHTML = `
                                     <h3 class="course-title">${course.title}</h3>
                                     <p class="course-description">${course.description}</p>
                                     <p class="enrollment-date">Enrolled on: ${enrollmentDate}</p>
+                                    ${scheduleHTML}
                                 `;
-                                courseListDiv.appendChild(courseCard);
+                                courseGridDiv.appendChild(courseCard);
                             });
                         })
                         .catch(error => {
                             console.error('Error fetching enrolled courses:', error);
-                            courseListDiv.innerHTML = '<p>Failed to load enrolled courses.</p>';
+                            courseGridDiv.innerHTML = '<p>Failed to load enrolled courses.</p>';
                         });
                 });
             </script>

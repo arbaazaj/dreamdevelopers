@@ -54,66 +54,91 @@ app.get('/api/user/status', (req, res) => {
 });
 
 app.get('/api/user/data', requireLogin, (req, res) => {
-    const userId = req.user.id;
-
-    pool.query(
-        `SELECT
+    const studentId = req.user.id;
+    const query = `
+        SELECT
             s.name,
             e.course_id,
             c.title AS course_title,
-            c.category AS course_category,
             sch.day,
             sch.time
         FROM students s
         LEFT JOIN enrollments e ON s.id = e.student_id
         LEFT JOIN courses c ON e.course_id = c.id
         LEFT JOIN schedules sch ON c.id = sch.course_id
-        WHERE s.id = ?`,
-        [userId],
-        (error, results) => {
-            if (error) {
-                console.error('Error fetching user data:', error);
-                return res.status(500).json({ error: 'Error fetching user data.' });
-            }
+        WHERE s.id = ?
+    `;
 
-            if (results.length > 0) {
-                const name = results[0].name;
-                let enrolledCourses = [];
-                const courseMap = new Map(); // Use a Map to store courses and their schedules
-
-                results.forEach(row => {
-                    if (row.course_id) { // Check if the user is enrolled in any course
-                        if (!courseMap.has(row.course_id)) {
-                            courseMap.set(row.course_id, {
-                                courseId: row.course_id,
-                                courseTitle: row.course_title,
-                                courseCategory: row.course_category,
-                                schedules: []
-                            });
-                        }
-                        // Push schedules into the array.
-                        courseMap.get(row.course_id).schedules.push({ day: row.day, time: row.time });
-                    }
-                });
-
-                // Convert the map to the array
-                enrolledCourses = Array.from(courseMap.values());
-                res.json({ name: name, enrolledCourses: enrolledCourses });
-            } else {
-                res.json({ name: 'Student', enrolledCourses: [] }); // Or handle this as you see fit
-            }
+    pool.query(query, [studentId], (error, results) => {
+        if (error) {
+            console.error('Error fetching user data:', error);
+            return res.status(500).json({ message: 'Failed to fetch user data' });
         }
-    );
+
+        const enrolledCourses = [];
+        const coursesMap = new Map();
+
+        results.forEach(row => {
+            if (row.course_id) {
+                if (!coursesMap.has(row.course_id)) {
+                    coursesMap.set(row.course_id, {
+                        courseTitle: row.course_title,
+                        schedules: []
+                    });
+                    enrolledCourses.push(coursesMap.get(row.course_id));
+                }
+                if (row.day && row.time) {
+                    coursesMap.get(row.course_id).schedules.push({ day: row.day, time: row.time });
+                }
+            }
+        });
+
+        res.json({ name: results[0]?.name, enrolledCourses });
+    });
 });
 
 // Courses API endpoint
 app.get('/api/courses', (req, res) => {
-    pool.query('SELECT id, title, description, category, logo FROM courses', (error, results) => { // Include logo
+    const selectedCategories = req.query.categories ? req.query.categories.split(',') : [];
+    let query = `
+        SELECT
+            c.id,
+            c.title,
+            c.description,
+            c.logo,
+            c.fees,
+            c.duration,
+            GROUP_CONCAT(cat.name SEPARATOR ',') AS categories
+        FROM
+            courses c
+        JOIN
+            course_categories cc ON c.id = cc.course_id
+        JOIN
+            categories cat ON cc.category_id = cat.id
+    `;
+    const queryParams = [];
+
+    if (selectedCategories.length > 0) {
+        query += ` WHERE c.id IN (
+            SELECT course_id
+            FROM course_categories cc_filter
+            JOIN categories cat_filter ON cc_filter.category_id = cat_filter.id
+            WHERE cat_filter.name IN (?)
+            GROUP BY course_id
+            HAVING COUNT(DISTINCT cat_filter.name) = ?
+        )`;
+        queryParams.push(selectedCategories);
+        queryParams.push(selectedCategories.length);
+    }
+
+    query += ` GROUP BY c.id, c.title, c.description, c.logo, c.fees, c.duration`; // Add new columns to GROUP BY
+
+    pool.query(query, queryParams, (error, results) => {
         if (error) {
-            console.error('Error fetching courses:', error);
+            console.error('Error fetching courses with categories and details:', error);
             return res.status(500).json({ message: 'Failed to fetch courses' });
         }
-        res.json(results);
+        res.json(results.map(course => ({ ...course, categories: course.categories.split(',') })));
     });
 });
 
@@ -139,23 +164,32 @@ app.get('/api/dashboard', requireLogin, (req, res) => {
     const studentId = req.user.id;
     const query = `
         SELECT
+            c.id AS course_id,
             c.title,
             c.description,
-            e.enrollment_date
+            e.enrollment_date,
+            GROUP_CONCAT(CONCAT(s.day, ' at ', s.time) SEPARATOR ', ') AS schedules
         FROM
             enrollments e
         JOIN
             courses c ON e.course_id = c.id
+        LEFT JOIN
+            schedules s ON c.id = s.course_id
         WHERE
             e.student_id = ?
+        GROUP BY
+            c.id, c.title, c.description, e.enrollment_date
     `;
 
     pool.query(query, [studentId], (error, results) => {
         if (error) {
-            console.error('Error fetching dashboard data:', error);
+            console.error('Error fetching dashboard data with schedules:', error);
             return res.status(500).json({ message: 'Failed to fetch dashboard data' });
         }
-        res.json(results);
+        res.json(results.map(course => ({
+            ...course,
+            schedules: course.schedules ? course.schedules.split(', ') : []
+        })));
     });
 });
 
@@ -192,7 +226,7 @@ app.get('/register', (req, res) => {
 });
 
 // Dashboard page endpoint
-app.get('/dashboard', (req, res) => {
+app.get('/dashboard', requireLogin, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'), { loggedIn: true });
 });
 

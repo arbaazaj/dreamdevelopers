@@ -4,7 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Courses - Dream Developers</title>
-    <link rel="stylesheet" href="style.css">
+<!--    <link rel="stylesheet" href="style.css">-->
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/typography.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/courses.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/theme-light.css" id="light-theme">
+    <link rel="stylesheet" href="/css/theme-dark.css" id="dark-theme" disabled>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -97,9 +106,6 @@
             <h1>Our Courses</h1>
             <div class="course-filter">
                 <button data-category="all">All</button>
-                <button data-category="Flutter">Flutter</button>
-                <button data-category="Programming Language">Programming Language</button>
-                <button data-category="Web Development">Web Development</button>
             </div>
             <div class="course-list">
             </div>
@@ -109,24 +115,33 @@
             const courseFilter = document.querySelector('.course-filter');
 
             let coursesData = []; // Store courses data globally
-            let currentCategory = 'all';
+            let currentCategories = new Set(); // Use a Set to store selected categories
 
             function displayCourses(courses) {
                 courseList.innerHTML = ''; // Clear previous courses
-                const filteredCourses = currentCategory === 'all' ? courses : courses.filter(course => course.category === currentCategory);
+                const filteredCourses = courses.filter(course => {
+                    if (currentCategories.size === 0) {
+                        return true; // Show all if no categories are selected
+                    }
+                    return Array.from(currentCategories).some(cat => course.categories.includes(cat));
+                });
 
                 filteredCourses.forEach(course => {
                     const courseDiv = document.createElement('div');
                     courseDiv.classList.add('course-card');
                     courseDiv.innerHTML = `
-                <div class="course-header">
-                    <img src="${course.logo}" alt="${course.title} Logo" class="course-logo">
-                    <h3 class="course-title">${course.title}</h3>
-                </div>
-                <p class="course-description">${course.description}</p>
-                <p class="course-category">Category: ${course.category}</p>
-                <button class="enroll-button" data-course-id="${course.id}">Enroll Now</button>
-            `;
+    <div class="course-header">
+        <img src="${course.logo}" alt="${course.title} Logo" class="course-logo">
+        <h3 class="course-title">${course.title}</h3>
+    </div>
+    <p class="course-description">${course.description}</p>
+    <p class="course-categories">
+        Categories: ${course.categories.join(', ')}
+    </p>
+    <p class="course-fees">Fees: $${course.fees}</p>
+    <p class="course-duration">Duration: ${course.duration} months</p>
+    <button class="enroll-button" data-course-id="${course.id}">Enroll Now</button>
+`;
                     courseList.appendChild(courseDiv);
                 });
 
@@ -141,15 +156,47 @@
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({ courseId: courseId }),
+                            redirect: 'manual'
                         })
-                            .then(response => response.json())
+                            .then(response => {
+                                if (response.status === 302) {
+                                    const redirectURL = response.headers.get('Location');
+                                    if (redirectURL) {
+                                        window.location.href = redirectURL;
+                                    } else {
+                                        console.error('Redirected without a Location header.');
+                                        alert('You need to log in to enroll.');
+                                    }
+                                    throw new Error('Redirecting to login');
+                                } else if (!response.ok) {
+                                    return response.text().then(text => {
+                                        if (text) {
+                                            try {
+                                                const data = JSON.parse(text);
+                                                alert(data.message || 'Failed to enroll. Please try again.');
+                                                console.error('Enrollment error:', data);
+                                            } catch (e) {
+                                                console.error('Error parsing non-JSON error response:', e, text);
+                                                alert('Failed to enroll. Please try again.');
+                                            }
+                                        } else {
+                                            console.error('Empty error response from server.');
+                                            alert('Failed to enroll. Please try again.');
+                                        }
+                                        throw new Error('Enrollment failed');
+                                    });
+                                }
+                                return response.json();
+                            })
                             .then(data => {
                                 alert(data.message);
                                 window.location.href = '/dashboard';
                             })
                             .catch(error => {
-                                console.error('Error enrolling:', error);
-                                alert('Failed to enroll. Please try again.');
+                                if (error.message !== 'Redirecting to login' && error.message !== 'Enrollment failed') {
+                                    console.error('Error enrolling:', error);
+                                    alert('Failed to enroll. Please try again.');
+                                }
                             });
                     });
                 });
@@ -159,6 +206,19 @@
                 .then(response => response.json())
                 .then(data => {
                     coursesData = data; // Store the data
+                    const categoriesSet = new Set();
+                    data.forEach(course => {
+                        course.categories.forEach(cat => categoriesSet.add(cat));
+                    });
+
+                    // Generate category filter buttons
+                    categoriesSet.forEach(category => {
+                        const button = document.createElement('button');
+                        button.dataset.category = category;
+                        button.textContent = category;
+                        courseFilter.appendChild(button);
+                    });
+
                     displayCourses(coursesData); // Initial display
                 })
                 .catch(error => {
@@ -166,16 +226,31 @@
                     courseList.innerHTML = '<p>Failed to load courses.</p>';
                 });
 
-            // Event listener for category filter
+            // Event listener for category filter (remains the same)
             courseFilter.addEventListener('click', (event) => {
                 if (event.target.tagName === 'BUTTON') {
-                    currentCategory = event.target.dataset.category;
+                    const category = event.target.dataset.category;
+                    const allButton = document.querySelector('.course-filter button[data-category="all"]');
+
+                    if (category === 'all') {
+                        currentCategories.clear();
+                        document.querySelectorAll('.course-filter button').forEach(button => button.classList.remove('active'));
+                        allButton.classList.add('active');
+                    } else {
+                        if (currentCategories.has(category)) {
+                            currentCategories.delete(category);
+                            event.target.classList.remove('active');
+                        } else {
+                            currentCategories.add(category);
+                            event.target.classList.add('active');
+                        }
+                        if (currentCategories.size > 0) {
+                            allButton.classList.remove('active');
+                        } else {
+                            allButton.classList.add('active');
+                        }
+                    }
                     displayCourses(coursesData);
-                    // Update active button style
-                    document.querySelectorAll('.course-filter button').forEach(button => {
-                        button.classList.remove('active');
-                    });
-                    event.target.classList.add('active');
                 }
             });
         </script>

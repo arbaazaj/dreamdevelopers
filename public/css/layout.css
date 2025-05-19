@@ -1,0 +1,10 @@
+/* layout.css */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+body.dark-theme .container {
+    background-color: rgba(37, 37, 37, 0.9); /* Semi-transparent dark background for container */
+}

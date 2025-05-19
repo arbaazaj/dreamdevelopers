@@ -1,0 +1,128 @@
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.dashboard-course-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-course-card .course-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.dashboard-course-card .course-description {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    flex-grow: 1; /* Allow description to take up extra space */
+}
+
+.dashboard-course-card .enrollment-date {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.dashboard-course-card .schedule-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.dashboard-course-card ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.dashboard-course-card ul li {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 5px;
+}
+
+.dashboard-course-card p {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+/* Dark Theme for Dashboard (Updated) */
+body.dark-theme {
+    background-color: #1a1a1a;
+    color: #eee;
+}
+
+body.dark-theme header {
+    background-color: #333;
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme header a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-theme #enrolled-courses h2 {
+    color: #ddd;
+    border-bottom-color: #555;
+}
+
+body.dark-theme .dashboard-course-card {
+    background-color: #2a2a2a;
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.05);
+    color: #eee;
+}
+
+body.dark-theme .dashboard-course-card:hover {
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme .dashboard-course-card .course-title {
+    color: #eee;
+}
+
+body.dark-theme .dashboard-course-card .course-description {
+    color: #ccc;
+}
+
+body.dark-theme .dashboard-course-card .enrollment-date {
+    color: #bbb;
+}
+
+body.dark-theme .dashboard-course-card .schedule-title {
+    color: #ddd;
+}
+
+body.dark-theme .dashboard-course-card ul li {
+    color: #ccc;
+}
+
+body.dark-theme .dashboard-course-card p {
+    color: #ccc;
+}
+
+body.dark-theme footer {
+    background-color: #222;
+    color: #eee;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+}
