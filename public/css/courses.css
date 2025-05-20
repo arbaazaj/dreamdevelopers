@@ -181,3 +181,94 @@ body.dark-theme .course-filter button.active{
     color: #6c757d; /* Gray color for duration */
     margin-bottom: 10px;
 }
+
+.course-card .course-actions {
+    display: flex;
+    gap: 10px; /* Adjust spacing between buttons as needed */
+    margin-top: 15px; /* Add some space above the buttons */
+}
+
+.course-card .course-actions button {
+    flex: 1; /* Make both buttons take equal available space */
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden; /* Hide any overflowing text */
+    text-overflow: ellipsis; /* Show an ellipsis (...) for overflow */
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.course-card .view-details-button {
+    background-color: #007bff;
+    color: white;
+}
+
+.course-card .view-details-button:hover {
+    background-color: #0056b3;
+}
+
+.course-card .enroll-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.course-card .enroll-button:hover {
+    background-color: #1e7e34;
+}
+
+/* Dark Theme Styles */
+body.dark-theme .course-card {
+    background-color: #2a2a2a;
+    /* Updated Shadow for Dark Mode */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4), 0 8px 10px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-theme .course-card:hover {
+    /* Increased Shadow on Hover for Dark Mode */
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.4), 0 12px 16px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-theme .course-title {
+    color: #eee;
+}
+
+body.dark-theme .course-description {
+    color: #ccc;
+}
+
+body.dark-theme .course-category {
+    color: #bbb;
+}
+
+body.dark-theme .course-actions .view-details-button {
+    background-color: #3b82f6; /* Match the active filter button color */
+    color: #ffffff;
+}
+
+body.dark-theme .course-actions .view-details-button:hover {
+    background-color: #2563eb; /* Darker shade for hover */
+}
+
+body.dark-theme .enroll-button {
+    background-color: #4CAF50; /* A darker green for dark mode */
+    color: #ffffff;
+}
+
+body.dark-theme .enroll-button:hover {
+    background-color: #45a049; /* Slightly darker shade for hover */
+}
+
+body.dark-theme .course-filter button{
+    background-color: #4a5568;
+    color: #fff;
+}
+body.dark-theme .course-filter button:hover {
+    background-color: #718096;
+}
+body.dark-theme .course-filter button.active{
+    background-color: #3b82f6;
+    color: #fff;
+}

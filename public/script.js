@@ -9,29 +9,36 @@ if (enrollButton) {
 }
 
 // Theme Toggle Functionality
-const themeToggle = document.getElementById('theme-toggle');
-const body = document.body;
-const sunIcon = themeToggle.querySelector('.fa-sun');
-const moonIcon = document.createElement('i');
-moonIcon.classList.add('fas', 'fa-moon');
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("Button clicked!");
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body;
+    const sunIcon = themeToggle ? themeToggle.querySelector('.fa-sun') : null;
+    const moonIcon = document.createElement('i');
+    moonIcon.classList.add('fas', 'fa-moon');
 
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'dark') {
-    body.classList.add('dark-theme');
-    themeToggle.innerHTML = '';
-    themeToggle.appendChild(moonIcon);
-}
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-theme');
+        if (themeToggle && sunIcon) {
+            themeToggle.innerHTML = '';
+            themeToggle.appendChild(moonIcon);
+        }
+    }
 
-themeToggle.addEventListener('click', () => {
-    body.classList.toggle('dark-theme');
-    if (body.classList.contains('dark-theme')) {
-        localStorage.setItem('theme', 'dark');
-        themeToggle.innerHTML = '';
-        themeToggle.appendChild(moonIcon);
-    } else {
-        localStorage.setItem('theme', 'light');
-        themeToggle.innerHTML = '';
-        themeToggle.appendChild(sunIcon);
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-theme');
+            if (body.classList.contains('dark-theme')) {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.innerHTML = '';
+                themeToggle.appendChild(moonIcon);
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeToggle.innerHTML = '';
+                themeToggle.appendChild(sunIcon);
+            }
+        });
     }
 });
 

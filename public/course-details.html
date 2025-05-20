@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Details - Dream Developers</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/typography.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/course-details.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/theme-light.css" id="light-theme">
+    <link rel="stylesheet" href="/css/theme-dark.css" id="dark-theme" disabled>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <nav class="navbar">
+            <div class="logo">Dream Developers</div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <script>
+                    fetch('/api/user/status')
+                        .then(response => response.json())
+                        .then(data => {
+                            const loggedIn = data.loggedIn;
+                            const navLinksContainer = document.querySelector('.nav-links');
+                            navLinksContainer.innerHTML = ''; // Clear existing links
+
+                            const homeLi = document.createElement('li');
+                            const homeLink = document.createElement('a');
+                            homeLink.href = '/';
+                            homeLink.textContent = 'Home';
+                            homeLi.appendChild(homeLink);
+                            navLinksContainer.appendChild(homeLi);
+
+                            const coursesLi = document.createElement('li');
+                            const coursesLink = document.createElement('a');
+                            coursesLink.href = '/courses';
+                            coursesLink.textContent = 'Courses';
+                            coursesLi.appendChild(coursesLink);
+                            navLinksContainer.appendChild(coursesLi);
+
+                            const scheduleLi = document.createElement('li');
+                            const scheduleLink = document.createElement('a');
+                            scheduleLink.href = '/schedule';
+                            scheduleLink.textContent = 'Schedule';
+                            scheduleLi.appendChild(scheduleLink);
+                            navLinksContainer.appendChild(scheduleLi);
+
+                            const contactLi = document.createElement('li');
+                            const contactLink = document.createElement('a');
+                            contactLink.href = '/contact';
+                            contactLink.textContent = 'Contact';
+                            contactLi.appendChild(contactLink);
+                            navLinksContainer.appendChild(contactLi);
+
+                            if (loggedIn) {
+                                const dashboardLi = document.createElement('li');
+                                const dashboardLink = document.createElement('a');
+                                dashboardLink.href = '/dashboard';
+                                dashboardLink.textContent = 'Dashboard';
+                                dashboardLi.appendChild(dashboardLink);
+                                navLinksContainer.appendChild(dashboardLi);
+
+                                const logoutLi = document.createElement('li');
+                                const logoutLink = document.createElement('a');
+                                logoutLink.href = '/logout';
+                                logoutLink.textContent = 'Logout';
+                                logoutLi.appendChild(logoutLink);
+                                navLinksContainer.appendChild(logoutLi);
+                            } else {
+                                const loginLi = document.createElement('li');
+                                const loginLink = document.createElement('a');
+                                loginLink.href = '/login';
+                                loginLink.textContent = 'Login';
+                                loginLi.appendChild(loginLink);
+                                navLinksContainer.appendChild(loginLi);
+
+                                const registerLi = document.createElement('li');
+                                const registerLink = document.createElement('a');
+                                registerLink.href = '/register';
+                                registerLink.textContent = 'Register';
+                                registerLi.appendChild(registerLink);
+                                navLinksContainer.appendChild(registerLi);
+                            }
+                        });
+                </script>
+            </ul>
+            <button id="theme-toggle">
+                <i class="fas fa-sun"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main class="content">
+        <section id="course-details">
+            <div class="course-header">
+                <img src="" alt="Course Logo" class="course-logo">
+                <h1 class="course-title"></h1>
+            </div>
+            <p class="course-description"></p>
+            <p class="course-categories">Categories: <span></span></p>
+            <p class="course-fees">Fees: <span></span></p>
+            <p class="course-duration">Duration: <span></span> months</p>
+
+            <h2>Instructor</h2>
+            <p class="instructor"></p>
+
+            <h2>Syllabus</h2>
+            <div class="syllabus"></div>
+
+            <h2>Duration</h2>
+            <p><span class="duration-weeks"></span> weeks</p>
+            <div class="schedule-full"></div>
+
+            <h2>Prerequisites</h2>
+            <div class="prerequisites"></div>
+
+            <h2>Learning Outcomes</h2>
+            <div class="learning-outcomes"></div>
+
+            <h2>Assessment Methods</h2>
+            <div class="assessment-methods"></div>
+
+            <button class="enroll-button" data-course-id="">Enroll Now</button>
+            <button class="back-button">Back to Courses</button>
+        </section>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const courseDetailsSection = document.getElementById('course-details');
+                const courseLogo = courseDetailsSection.querySelector('.course-logo');
+                const courseTitle = courseDetailsSection.querySelector('.course-title');
+                const courseDescription = courseDetailsSection.querySelector('.course-description');
+                const courseCategories = courseDetailsSection.querySelector('.course-categories span');
+                const courseFees = courseDetailsSection.querySelector('.course-fees span');
+                const courseDuration = courseDetailsSection.querySelector('.course-duration span');
+                const instructorElement = courseDetailsSection.querySelector('.instructor');
+                const syllabusElement = courseDetailsSection.querySelector('.syllabus');
+                const durationWeeksElement = courseDetailsSection.querySelector('.duration-weeks');
+                const scheduleFullElement = courseDetailsSection.querySelector('.schedule-full');
+                const prerequisitesElement = courseDetailsSection.querySelector('.prerequisites');
+                const learningOutcomesElement = courseDetailsSection.querySelector('.learning-outcomes');
+                const assessmentMethodsElement = courseDetailsSection.querySelector('.assessment-methods');
+                const enrollButton = courseDetailsSection.querySelector('.enroll-button');
+                const backButton = courseDetailsSection.querySelector('.back-button');
+
+                const pathSegments = window.location.pathname.split('/');
+                const courseId = pathSegments[pathSegments.length - 1]; // Get the course ID from the URL
+
+                fetch(`/api/course-details/${courseId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(course => {
+                        courseLogo.src = course.logo || '/images/default-course.png';
+                        courseLogo.alt = course.title;
+                        courseTitle.textContent = course.title;
+                        courseDescription.textContent = course.description;
+                        courseCategories.textContent = course.categories.join(', ');
+                        courseFees.textContent = `$${course.fees}`;
+                        courseDuration.textContent = course.duration;
+                        instructorElement.textContent = course.instructor || 'Not specified';
+                        syllabusElement.innerHTML = course.syllabus || 'No syllabus available.';
+                        durationWeeksElement.textContent = course.duration_weeks || 'Not specified';
+                        scheduleFullElement.textContent = course.schedule_full || 'Not specified';
+                        prerequisitesElement.innerHTML = course.prerequisites || 'No prerequisites.';
+                        learningOutcomesElement.innerHTML = course.learning_outcomes || 'No learning outcomes specified.';
+                        assessmentMethodsElement.innerHTML = course.assessment_methods || 'No assessment methods specified.';
+                        enrollButton.dataset.courseId = course.id;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching course details:', error);
+                        courseDetailsSection.innerHTML = '<p>Failed to load course details.</p>';
+                    });
+
+                enrollButton.addEventListener('click', () => {
+                    const courseIdToEnroll = enrollButton.dataset.courseId;
+                    fetch('/api/enroll', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ courseId: courseIdToEnroll }),
+                        redirect: 'manual'
+                    })
+                        .then(response => {
+                            if (response.status === 302) {
+                                const redirectURL = response.headers.get('Location');
+                                if (redirectURL) {
+                                    window.location.href = redirectURL;
+                                } else {
+                                    console.error('Redirected without a Location header.');
+                                    alert('You need to log in to enroll.');
+                                }
+                                throw new Error('Redirecting to login');
+                            } else if (!response.ok) {
+                                return response.text().then(text => {
+                                    // Error handling (same as courses.html)
+                                });
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            alert(data.message);
+                            window.location.href = '/dashboard';
+                        })
+                        .catch(error => {
+                            // Error handling (same as courses.html)
+                        });
+                });
+
+                backButton.addEventListener('click', () => {
+                    window.location.href = '/courses';
+                });
+            });
+        </script>
+    </main>
+    <footer>
+        <div class="social-links">
+            <a href="#" target="_blank" aria-label="Facebook"><i class="fab fa-facebook" style="color: #1877f2;"></i></a>
+            <a href="#" target="_blank" aria-label="Twitter"><i class="fab fa-twitter" style="color: #1da1f2;"></i></a>
+            <a href="#" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin" style="color: #0077b5;"></i></a>
+            <a href="#" target="_blank" aria-label="Instagram"><i class="fab fa-instagram" style="color: #c13584;"></i></a>
+            <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube" style="color: #ff0000;"></i></a>
+        </div>
+        <p>&copy; 2025 Dream Developers. All rights reserved.</p>
+    </footer>
+</div>
+<script src="/script.js"></script>
+</body>
+</html>

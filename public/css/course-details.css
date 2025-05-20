@@ -1,0 +1,177 @@
+/* public/css/course-details.css */
+#course-details {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.course-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.course-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 5px;
+    margin-right: 20px;
+    object-fit: cover;
+}
+
+.course-title {
+    font-size: 28px;
+    color: #333;
+    margin: 0;
+}
+
+.course-description {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+.course-categories {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.course-fees {
+    font-size: 18px;
+    color: #28a745;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.course-duration {
+    font-size: 16px;
+    color: #6c757d;
+    margin-bottom: 15px;
+}
+
+h2 {
+    font-size: 20px;
+    color: #444;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.instructor {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.syllabus {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+.prerequisites {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+.learning-outcomes {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+.assessment-methods {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+.enroll-button, .back-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+}
+
+.enroll-button {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.enroll-button:hover {
+    background-color: #0056b3;
+}
+
+.back-button {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.back-button:hover {
+    background-color: #545b62;
+}
+
+/* Dark Theme Styles for course-details.css */
+body.dark-theme #course-details {
+    background-color: #2a2a2a; /* Dark background color */
+    color: #eee; /* Light text color */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4); /* Darker shadow for dark mode */
+    border-bottom: 1px solid #444; /* Darker border */
+}
+
+body.dark-theme .course-header {
+    border-bottom: 1px solid #444; /* Darker border */
+}
+
+body.dark-theme .course-title {
+    color: #eee; /* Light text color */
+}
+
+body.dark-theme .course-description,
+body.dark-theme .course-categories,
+body.dark-theme .course-fees,
+body.dark-theme .course-duration,
+body.dark-theme .instructor,
+body.dark-theme .syllabus,
+body.dark-theme .prerequisites,
+body.dark-theme .learning-outcomes,
+body.dark-theme .assessment-methods {
+    color: #ccc; /* Slightly lighter text color */
+}
+
+body.dark-theme h2 {
+    color: #bbb; /* Lighter heading color */
+    border-bottom: 1px solid #444; /* Darker border */
+}
+
+body.dark-theme .enroll-button {
+    background-color: #3b82f6; /* Light blue for enroll button in dark mode */
+    color: #ffffff;
+}
+
+body.dark-theme .enroll-button:hover {
+    background-color: #2563eb; /* Darker shade for hover */
+}
+
+body.dark-theme .back-button {
+    background-color: #4a5568; /* Dark gray for back button in dark mode */
+    color: #fff;
+}
+
+body.dark-theme .back-button:hover {
+    background-color: #718096; /* Lighter shade for hover */
+}

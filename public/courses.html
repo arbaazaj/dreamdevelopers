@@ -118,10 +118,10 @@
             let currentCategories = new Set(); // Use a Set to store selected categories
 
             function displayCourses(courses) {
-                courseList.innerHTML = ''; // Clear previous courses
+                courseList.innerHTML = '';
                 const filteredCourses = courses.filter(course => {
                     if (currentCategories.size === 0) {
-                        return true; // Show all if no categories are selected
+                        return true;
                     }
                     return Array.from(currentCategories).some(cat => course.categories.includes(cat));
                 });
@@ -130,18 +130,21 @@
                     const courseDiv = document.createElement('div');
                     courseDiv.classList.add('course-card');
                     courseDiv.innerHTML = `
-    <div class="course-header">
-        <img src="${course.logo}" alt="${course.title} Logo" class="course-logo">
-        <h3 class="course-title">${course.title}</h3>
-    </div>
-    <p class="course-description">${course.description}</p>
-    <p class="course-categories">
-        Categories: ${course.categories.join(', ')}
-    </p>
-    <p class="course-fees">Fees: $${course.fees}</p>
-    <p class="course-duration">Duration: ${course.duration} months</p>
-    <button class="enroll-button" data-course-id="${course.id}">Enroll Now</button>
-`;
+            <div class="course-header">
+                <img src="${course.logo}" alt="${course.title} Logo" class="course-logo">
+                <h3 class="course-title">${course.title}</h3>
+            </div>
+            <p class="course-description">${course.description}</p>
+            <p class="course-categories">
+                Categories: ${course.categories.join(', ')}
+            </p>
+            <p class="course-fees">Fees: $${course.fees}</p>
+            <p class="course-duration">Duration: ${course.duration} months</p>
+            <div class="course-actions">
+                <button class="view-details-button" data-course-id="${course.id}">View Details</button>
+                <button class="enroll-button" data-course-id="${course.id}">Enroll Now</button>
+            </div>
+        `;
                     courseList.appendChild(courseDiv);
                 });
 
@@ -200,26 +203,46 @@
                             });
                     });
                 });
+
+                // Add event listeners for the view details buttons
+                const viewDetailsButtons = document.querySelectorAll('.view-details-button');
+                viewDetailsButtons.forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const courseId = event.target.dataset.courseId;
+                        window.location.href = `/course-details/${courseId}`; // Use the correct path
+                    });
+                });
             }
 
             fetch('/api/courses')
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        console.error(`HTTP error! status: ${response.status}`);
+                        return response.text().then(text => {
+                            console.error('Server response:', text);
+                            throw new Error('Failed to fetch courses');
+                        });
+                    }
+                    return response.json();
+                })
                 .then(data => {
-                    coursesData = data; // Store the data
+                    console.log('Data received from /api/courses:', data);
+                    coursesData = data;
                     const categoriesSet = new Set();
                     data.forEach(course => {
-                        course.categories.forEach(cat => categoriesSet.add(cat));
+                        if (course && course.categories) {
+                            course.categories.forEach(cat => categoriesSet.add(cat));
+                        } else {
+                            console.warn('Course object missing or has no categories:', course);
+                        }
                     });
-
-                    // Generate category filter buttons
                     categoriesSet.forEach(category => {
                         const button = document.createElement('button');
                         button.dataset.category = category;
                         button.textContent = category;
                         courseFilter.appendChild(button);
                     });
-
-                    displayCourses(coursesData); // Initial display
+                    displayCourses(coursesData); // Moved the initial call here
                 })
                 .catch(error => {
                     console.error('Error fetching courses:', error);
@@ -250,7 +273,7 @@
                             allButton.classList.add('active');
                         }
                     }
-                    displayCourses(coursesData);
+                    displayCourses(coursesData); // Ensure we use the original fetched data
                 }
             });
         </script>

@@ -122,7 +122,8 @@
                         .then(response => response.json())
                         .then(enrolledCourses => {
                             if (enrolledCourses.length === 0) {
-                                courseGridDiv.innerHTML = '<p>You are not currently enrolled in any courses.</p> <a href="/courses" class="enroll-button">View Courses</a>';
+                                // TODO: The message with the view courses button is in grid view, I want the button below the message.
+                                courseGridDiv.innerHTML = '<p>You are not currently enrolled in any courses.</p><a href="/courses" class="enroll-button">View Courses</a>';
                                 return;
                             }
 
