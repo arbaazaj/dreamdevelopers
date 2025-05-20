@@ -537,3 +537,22 @@ body.dark-theme .form-response-message.success {
 body.dark-theme .form-response-message.error {
     color: #e57373; /* Lighter red in dark theme */
 }
+
+/* Mobile View Adjustments */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column; /* Stack sidebar and content vertically */
+    }
+
+    .sidebar {
+        flex: 0 0 auto; /* Allow it to take its natural height */
+        width: 100%; /* Make it full width */
+        margin-bottom: 20px; /* Add some space below the sidebar */
+        box-sizing: border-box; /* Ensure padding doesn't add to the width */
+    }
+
+    .content {
+        width: 100%; /* Make content full width as well */
+        box-sizing: border-box;
+    }
+}
