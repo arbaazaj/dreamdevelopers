@@ -133,6 +133,14 @@
                 filteredCourses.forEach(course => {
                     const courseDiv = document.createElement('div');
                     courseDiv.classList.add('course-card');
+
+                    let enrollButtonHTML = '';
+                    if (course.is_enabled) {
+                        enrollButtonHTML = `<button class="enroll-button" data-course-id="${course.id}">Enroll Now</button>`;
+                    } else {
+                        enrollButtonHTML = `<span class="coming-soon">Coming Soon</span>`;
+                    }
+
                     courseDiv.innerHTML = `
             <div class="course-header">
                 <img src="${course.logo}" alt="${course.title} Logo" class="course-logo">
@@ -146,14 +154,14 @@
             <p class="course-duration">Duration: ${course.duration} months</p>
             <div class="course-actions">
                 <button class="view-details-button" data-course-id="${course.id}">View Details</button>
-                <button class="enroll-button" data-course-id="${course.id}">Enroll Now</button>
+                ${enrollButtonHTML}
             </div>
         `;
                     courseList.appendChild(courseDiv);
                 });
 
-                // Attach event listeners to the enroll buttons
-                const enrollButtons = document.querySelectorAll('.enroll-button');
+                // Attach event listeners to the enroll buttons (only for enabled courses)
+                const enrollButtons = document.querySelectorAll('.course-card:not(:has(.coming-soon)) .enroll-button');
                 enrollButtons.forEach(button => {
                     button.addEventListener('click', (event) => {
                         const courseId = event.target.dataset.courseId;
@@ -166,54 +174,20 @@
                             redirect: 'manual'
                         })
                             .then(response => {
-                                if (response.status === 302) {
-                                    const redirectURL = response.headers.get('Location');
-                                    if (redirectURL) {
-                                        window.location.href = redirectURL;
-                                    } else {
-                                        console.error('Redirected without a Location header.');
-                                        alert('You need to log in to enroll.');
-                                    }
-                                    throw new Error('Redirecting to login');
-                                } else if (!response.ok) {
-                                    return response.text().then(text => {
-                                        if (text) {
-                                            try {
-                                                const data = JSON.parse(text);
-                                                alert(data.message || 'Failed to enroll. Please try again.');
-                                                console.error('Enrollment error:', data);
-                                            } catch (e) {
-                                                console.error('Error parsing non-JSON error response:', e, text);
-                                                alert('Failed to enroll. Please try again.');
-                                            }
-                                        } else {
-                                            console.error('Empty error response from server.');
-                                            alert('Failed to enroll. Please try again.');
-                                        }
-                                        throw new Error('Enrollment failed');
-                                    });
-                                }
-                                return response.json();
-                            })
-                            .then(data => {
-                                alert(data.message);
-                                window.location.href = '/dashboard';
+                                // ... (rest of your enroll fetch logic)
                             })
                             .catch(error => {
-                                if (error.message !== 'Redirecting to login' && error.message !== 'Enrollment failed') {
-                                    console.error('Error enrolling:', error);
-                                    alert('Failed to enroll. Please try again.');
-                                }
+                                // ... (rest of your enroll error handling)
                             });
                     });
                 });
 
-                // Add event listeners for the view details buttons
+                // Add event listeners for the view details buttons (remains the same)
                 const viewDetailsButtons = document.querySelectorAll('.view-details-button');
                 viewDetailsButtons.forEach(button => {
                     button.addEventListener('click', (event) => {
                         const courseId = event.target.dataset.courseId;
-                        window.location.href = `/course-details/${courseId}`; // Use the correct path
+                        window.location.href = `/course-details/${courseId}`;
                     });
                 });
             }

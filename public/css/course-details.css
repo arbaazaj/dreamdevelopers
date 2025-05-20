@@ -4,6 +4,9 @@
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex; /* Enable flexbox */
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-start; /* Align items to the start */
 }
 
 .course-header {
@@ -97,7 +100,14 @@ h2 {
     margin-bottom: 20px;
 }
 
-.enroll-button, .back-button {
+/* Style the container for the action buttons */
+#course-details {
+    /* ... previous styles ... */
+}
+
+#course-details > .enroll-button,
+#course-details > .back-button,
+#course-details > .coming-soon {
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
@@ -105,6 +115,15 @@ h2 {
     font-size: 16px;
     transition: background-color 0.3s ease;
     margin-right: 10px;
+    display: inline-block; /* Arrange in a row */
+    margin-top: 15px; /* Add some vertical space */
+}
+
+#course-details > .enroll-button:last-child,
+#course-details > .back-button:last-child,
+#course-details > .coming-soon:last-child {
+    margin-right: 0;
+    width: fit-content;
 }
 
 .enroll-button {
@@ -125,20 +144,27 @@ h2 {
     background-color: #545b62;
 }
 
-/* Dark Theme Styles for course-details.css */
+.coming-soon {
+    color: #ff9800;
+    font-weight: bold;
+    background-color: #fff3e0;
+    border: 1px solid #ffe0b2;
+}
+
+/* Dark Theme Styles */
 body.dark-theme #course-details {
-    background-color: #2a2a2a; /* Dark background color */
-    color: #eee; /* Light text color */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4); /* Darker shadow for dark mode */
-    border-bottom: 1px solid #444; /* Darker border */
+    background-color: #2a2a2a;
+    color: #eee;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid #444;
 }
 
 body.dark-theme .course-header {
-    border-bottom: 1px solid #444; /* Darker border */
+    border-bottom: 1px solid #444;
 }
 
 body.dark-theme .course-title {
-    color: #eee; /* Light text color */
+    color: #eee;
 }
 
 body.dark-theme .course-description,
@@ -150,28 +176,34 @@ body.dark-theme .syllabus,
 body.dark-theme .prerequisites,
 body.dark-theme .learning-outcomes,
 body.dark-theme .assessment-methods {
-    color: #ccc; /* Slightly lighter text color */
+    color: #ccc;
 }
 
 body.dark-theme h2 {
-    color: #bbb; /* Lighter heading color */
-    border-bottom: 1px solid #444; /* Darker border */
+    color: #bbb;
+    border-bottom: 1px solid #444;
 }
 
 body.dark-theme .enroll-button {
-    background-color: #3b82f6; /* Light blue for enroll button in dark mode */
+    background-color: #3b82f6;
     color: #ffffff;
 }
 
 body.dark-theme .enroll-button:hover {
-    background-color: #2563eb; /* Darker shade for hover */
+    background-color: #2563eb;
 }
 
 body.dark-theme .back-button {
-    background-color: #4a5568; /* Dark gray for back button in dark mode */
+    background-color: #4a5568;
     color: #fff;
 }
 
 body.dark-theme .back-button:hover {
-    background-color: #718096; /* Lighter shade for hover */
+    background-color: #718096;
+}
+
+body.dark-theme .coming-soon {
+    background-color: #424242;
+    color: #ffb74d;
+    border-color: #ffca28;
 }

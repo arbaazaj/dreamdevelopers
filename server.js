@@ -108,12 +108,13 @@ app.get('/api/courses', (req, res) => {
             c.logo,
             c.fees,
             c.duration,
+            c.is_enabled, -- Include the is_enabled column
             GROUP_CONCAT(cat.name SEPARATOR ',') AS categories
         FROM
             courses c
-        JOIN
+        LEFT JOIN
             course_categories cc ON c.id = cc.course_id
-        JOIN
+        LEFT JOIN
             categories cat ON cc.category_id = cat.id
     `;
     const queryParams = [];
@@ -131,17 +132,18 @@ app.get('/api/courses', (req, res) => {
         queryParams.push(selectedCategories.length);
     }
 
-    query += ` GROUP BY c.id, c.title, c.description, c.logo, c.fees, c.duration`; // Add new columns to GROUP BY
+    query += ` GROUP BY c.id, c.title, c.description, c.logo, c.fees, c.duration, c.is_enabled`; // Include is_enabled in GROUP BY
 
     pool.query(query, queryParams, (error, results) => {
         if (error) {
             console.error('Error fetching courses with categories and details:', error);
             return res.status(500).json({ message: 'Failed to fetch courses' });
         }
-        res.json(results.map(course => ({ ...course, categories: course.categories.split(',') })));
+        res.json(results.map(course => ({ ...course, categories: course.categories ? course.categories.split(',') : [] })));
     });
 });
 
+// Course details API endpoint
 // Course details API endpoint
 app.get('/api/course-details/:courseId', (req, res) => {
     const courseId = req.params.courseId;
@@ -149,6 +151,7 @@ app.get('/api/course-details/:courseId', (req, res) => {
         SELECT
             c.*,
             cd.*,
+            c.is_enabled, -- Include the is_enabled column
             GROUP_CONCAT(cat.name SEPARATOR ',') AS categories
         FROM
             courses c
@@ -161,7 +164,7 @@ app.get('/api/course-details/:courseId', (req, res) => {
         WHERE
             c.id = ?
         GROUP BY
-            c.id, c.title, c.description, c.logo, c.fees, c.duration,
+            c.id, c.title, c.description, c.logo, c.fees, c.duration, c.is_enabled,
             cd.instructor, cd.syllabus, cd.duration_weeks, cd.schedule_full,
             cd.prerequisites, cd.learning_outcomes, cd.assessment_methods;
     `;

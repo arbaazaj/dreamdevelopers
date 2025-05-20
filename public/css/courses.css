@@ -219,6 +219,22 @@ body.dark-theme .course-filter button.active{
     background-color: #1e7e34;
 }
 
+.coming-soon {
+    color: #ff9800; /* Orange color for "Coming Soon" */
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 5px;
+    background-color: #fff3e0; /* Light orange background */
+    border: 1px solid #ffe0b2;
+}
+
+/* Dark theme for "Coming Soon" */
+body.dark-theme .coming-soon {
+    background-color: #424242; /* Darker background */
+    color: #ffb74d; /* Lighter orange */
+    border-color: #ffca28;
+}
+
 /* Dark Theme Styles */
 body.dark-theme .course-card {
     background-color: #2a2a2a;
