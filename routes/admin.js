@@ -19,7 +19,10 @@ module.exports = ({pool, sessions, uuidv4, bcrypt, requireAdminLogin}) => {
                     const sessionId = uuidv4();
                     sessions[sessionId] = {adminId: admin.id, admin: {id: admin.id, email: admin.email}};
                     res.cookie('sessionId', sessionId, {httpOnly: true});
-                    return res.status(200).json({message: 'Admin login successful.', redirect: '/admin/dashboard'});
+                    return res.status(200).json({message: 'Admin login successful.', redirect: '/admin/dashboard',
+                        sessionId: sessionId,
+                        admin: { id: admin.id, email: admin.email}
+                    });
                 } else {
                     return res.status(401).json({message: 'Invalid admin username or password.'});
                 }

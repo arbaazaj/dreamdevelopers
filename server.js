@@ -42,8 +42,12 @@ const requireLogin = (req, res, next) => {
 // Middleware to check if user is admin and logged in.
 const requireAdminLogin = (req, res, next) => {
     const sessionId = req.cookies && req.cookies.sessionId;
-    if (sessionId && sessions && sessions[sessionId] && sessions[sessionId].adminId) {
-        req.admin = sessions[sessionId].admin; // Store admin info
+    const xSessionId = req.headers['x-session-id'];
+
+    const currentSessionId = xSessionId || sessionId;
+
+    if (currentSessionId && sessions && sessions[currentSessionId] && sessions[currentSessionId].adminId) {
+        req.admin = sessions[currentSessionId].admin; // Store admin info
         next();
     } else {
         res.status(401).json({message: 'Admin authentication required.'}); // Or redirect to an admin login page
@@ -69,7 +73,7 @@ const publicRoutes = require('./routes/public')({ pool, isLoggedIn, path, nodema
 const studentRoutes = require('./routes/student')({ pool, sessions, uuidv4, bcrypt, requireLogin, isLoggedIn, path });
 
 // --- Use Route ---
-app.use('/admin', adminRoutes);
+app.use('/api', adminRoutes);
 app.use('/', publicRoutes);
 app.use('/', studentRoutes);
 
