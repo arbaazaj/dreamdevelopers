@@ -206,10 +206,39 @@
                                         redirect: 'manual'
                                     })
                                         .then(response => {
-                                            // ... (rest of your enroll fetch logic)
+                                            if (response.ok) {
+                                                return response.json();
+                                            } else if (response.status === 401) {
+                                                // User is not logged in, redirect to login page
+                                                window.location.href = '/login';
+                                                return Promise.reject('Unauthorized');
+                                            } else if (response.status === 400) {
+                                                return response.json().then(data => {
+                                                    const errorMessage = data.message || 'Already enrolled or an error occurred.';
+                                                    alert(errorMessage);
+                                                    return Promise.reject(errorMessage);
+                                                });
+                                            } else {
+                                                console.error('Enrollment failed with status:', response.status);
+                                                return Promise.reject('Enrollment failed.');
+                                            }
+                                        })
+                                        .then(data => {
+                                            alert(data.message || 'Successfully enrolled!');
+                                            // Optionally update the UI to reflect enrollment (e.g., disable button, change text)
+                                            enrollButton.textContent = 'Enrolled';
+                                            enrollButton.classList.remove('enroll-button');
+                                            enrollButton.classList.add('enrolled-button');
+                                            enrollButton.disabled = true;
                                         })
                                         .catch(error => {
-                                            // ... (rest of your enroll error handling)
+                                            if (error !== 'Unauthorized') {
+                                                console.error('Error during enrollment:', error);
+                                                // Re-enable the button and reset its text on error
+                                                enrollButton.disabled = false;
+                                                enrollButton.textContent = 'Enroll Now';
+                                            }
+                                            // If unauthorized, the redirect has already happened
                                         });
                                 });
                             } else {

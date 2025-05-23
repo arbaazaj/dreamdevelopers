@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/css/navbar.css">
     <link rel="stylesheet" href="/css/dashboard.css">
     <link rel="stylesheet" href="/css/courses.css">
+    <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/footer.css">
     <link rel="stylesheet" href="/css/theme-light.css" id="light-theme">
     <link rel="stylesheet" href="/css/theme-dark.css" id="dark-theme" disabled>
@@ -193,18 +194,29 @@
 
             <section id="testimonials">
                 <h2>Testimonials from Aspiring Developers</h2>
-                <div class="testimonial-list">
-                    <div class="testimonial">
-                        <p>"The live classes were incredibly helpful! The instructor explained complex topics in a way that was easy to understand. I feel much more confident in my Flutter skills now."</p>
-                        <p class="testimonial-author">- Priya Sharma</p>
+                <div id="testimonials-carousel">
+                    <div class="testimonial-wrapper">
+                        <div class="testimonial-slide">
+                            <p>The live classes were incredibly helpful! The instructor explained complex topics in a way that was easy to understand. I feel much more confident in my Flutter skills now.</p>
+                            <p class="testimonial-author">- Priya Sharma</p>
+                        </div>
+                        <div class="testimonial-slide">
+                            <p>"I was a complete beginner to app development, but this course made it accessible and engaging. The hands-on projects were fantastic for learning by doing.</p>
+                            <p class="testimonial-author">- Rahul Verma</p>
+                        </div>
+                        <div class="testimonial-slide">
+                            <p>"The interactive Q&A sessions were invaluable. Getting immediate feedback on my code and questions really accelerated my learning.</p>
+                            <p class="testimonial-author">- Aisha Khan</p>
+                        </div>
                     </div>
-                    <div class="testimonial">
-                        <p>"I was a complete beginner to app development, but this course made it accessible and engaging. The hands-on projects were fantastic for learning by doing."</p>
-                        <p class="testimonial-author">- Rahul Verma</p>
+                    <div class="carousel-controls">
+                        <button id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+                        <button id="nextBtn"><i class="fas fa-chevron-right"></i></button>
                     </div>
-                    <div class="testimonial">
-                        <p>"The interactive Q&A sessions were invaluable. Getting immediate feedback on my code and questions really accelerated my learning."</p>
-                        <p class="testimonial-author">- Aisha Khan</p>
+                    <div class="carousel-indicators">
+                        <button class="indicator-btn active" data-index="0"></button>
+                        <button class="indicator-btn" data-index="1"></button>
+                        <button class="indicator-btn" data-index="2"></button>
                     </div>
                 </div>
             </section>
@@ -222,7 +234,7 @@
         <p>&copy; 2025 Dream Developers. All rights reserved.</p>
     </footer>
 </div>
-
+<script src="js/index.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

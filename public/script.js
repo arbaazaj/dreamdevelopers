@@ -1,12 +1,12 @@
 console.log("Frontend script loaded!");
 
 // Enrollment Button (still basic)
-const enrollButton = document.querySelector('#hero .enroll-button');
-if (enrollButton) {
-    enrollButton.addEventListener('click', () => {
-        alert("Enrollment functionality coming soon!");
-    });
-}
+// const enrollButton = document.querySelector('#hero .enroll-button');
+// if (enrollButton) {
+//     enrollButton.addEventListener('click', () => {
+//         alert("Enrollment functionality coming soon!");
+//     });
+// }
 
 // Theme Toggle Functionality
 document.addEventListener('DOMContentLoaded', () => {

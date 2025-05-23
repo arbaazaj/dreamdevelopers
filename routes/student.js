@@ -163,7 +163,7 @@ module.exports = ({pool, sessions, uuidv4, bcrypt, requireLogin, isLoggedIn, pat
         });
     });
 
-// Enroll in course route
+    // Enroll API endpoint
     router.post('/api/enroll', requireLogin, (req, res) => {
         const {courseId} = req.body;
         const studentId = req.user.id;

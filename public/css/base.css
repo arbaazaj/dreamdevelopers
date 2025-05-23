@@ -311,7 +311,7 @@ body.dark-theme #course-info,
 body.dark-theme #testimonials {
     background-color: #252525;
     color: #d4d4d4;
-    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.09);
 }
 
 body.dark-theme #why-learn {

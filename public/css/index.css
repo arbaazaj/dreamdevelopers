@@ -1,0 +1,109 @@
+/* Improved carousel styles */
+#testimonials-carousel {
+    overflow: hidden;
+    position: relative;
+    padding: 30px; /* Add some padding around the carousel */
+    border: 1px solid #555; /* Optional: Add a border for visual separation */
+    border-radius: 8px; /* Optional: Add rounded corners */
+}
+
+.testimonial-wrapper {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.testimonial-slide {
+    flex: 0 0 100%;
+    min-width: 100%;
+    padding: 40px;
+    box-sizing: border-box;
+    text-align: center; /* Center the testimonial content */
+}
+
+.testimonial-slide p:first-child {
+    font-style: italic;
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 10px;
+    position: relative; /* For quote marks */
+    padding: 15px;
+    background-color: #f9f9f9; /* Light background for quote */
+    border-left: 3px solid #d98400; /* Highlight quote border */
+    border-radius: 5px;
+}
+
+.testimonial-slide p:first-child::before {
+    content: '\201C'; /* Left double quotation mark */
+    font-size: 1em;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    color: #bbb;
+}
+
+.testimonial-slide p:first-child::after {
+    content: '\201D'; /* Right double quotation mark */
+    font-size: 1em;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    color: #bbb;
+}
+
+.testimonial-slide .testimonial-author {
+    font-weight: bold;
+    color: #bbb;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+
+.carousel-controls {
+    position: absolute;
+    top: 50%;
+    left: 10px; /* Adjust left position to prevent overlap */
+    right: 10px; /* Adjust right position to prevent overlap */
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    z-index: 10; /* Ensure controls are above the text */
+}
+
+.carousel-controls button {
+    background: none;
+    border: none;
+    font-size: 20px; /* Slightly smaller arrow size */
+    cursor: pointer;
+    color: #777; /* Muted arrow color */
+    padding: 8px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.carousel-controls button:hover {
+    opacity: 1;
+}
+
+.carousel-indicators {
+    position: absolute;
+    bottom: 15px; /* Adjust bottom spacing */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+}
+
+.carousel-indicators button {
+    background: #ddd;
+    border: none;
+    width: 1px; /* Smaller dot size */
+    height: 12px; /* Smaller dot size */
+    border-radius: 50%;
+    margin: 0 4px; /* Adjust spacing */
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.carousel-indicators button.active {
+    background-color: #333; /* Active indicator color */
+    opacity: 1;
+}

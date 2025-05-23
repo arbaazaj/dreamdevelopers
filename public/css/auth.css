@@ -74,9 +74,10 @@
 /* Dark Theme for Auth Pages */
 body.dark-theme #login,
 body.dark-theme #register {
+    border: 1px solid #555;
     background-color: #252525;
     color: #d4d4d4;
-    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
+    /*box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);*/
 }
 
 body.dark-theme #login h1,
