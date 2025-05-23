@@ -63,9 +63,10 @@ const isAdminLoggedIn = (req) => {
 };
 
 // --- Import Route Files ---
-const adminRoutes = require('./routes/admin');
-const publicRoutes = require('./routes/public');
-const studentRoutes = require('./routes/student');
+// Each route file will now export a function that accepts these dependencies
+const adminRoutes = require('./routes/admin')({ pool, sessions, uuidv4, bcrypt, requireAdminLogin });
+const publicRoutes = require('./routes/public')({ pool, isLoggedIn, path, nodemailer });
+const studentRoutes = require('./routes/student')({ pool, sessions, uuidv4, bcrypt, requireLogin, isLoggedIn, path });
 
 // --- Use Route ---
 app.use('/admin', adminRoutes);
@@ -78,11 +79,13 @@ app.listen(port, () => {
 
 // Export necessary modules/variables for route files.
 module.exports = {
+    app,
     pool,
     sessions,
     uuidv4,
     bcrypt,
     path, // Export path for res.sendFile
+    port,
     nodemailer, // Export nodemailer for the public routes
     requireLogin,
     requireAdminLogin,
