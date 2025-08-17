@@ -19,9 +19,10 @@ module.exports = ({pool, sessions, uuidv4, bcrypt, requireAdminLogin}) => {
                     const sessionId = uuidv4();
                     sessions[sessionId] = {adminId: admin.id, admin: {id: admin.id, email: admin.email}};
                     res.cookie('sessionId', sessionId, {httpOnly: true});
-                    return res.status(200).json({message: 'Admin login successful.', redirect: '/admin/dashboard',
+                    return res.status(200).json({
+                        message: 'Admin login successful.', redirect: '/admin/dashboard',
                         sessionId: sessionId,
-                        admin: { id: admin.id, email: admin.email}
+                        admin: {id: admin.id, email: admin.email}
                     });
                 } else {
                     return res.status(401).json({message: 'Invalid admin username or password.'});
@@ -58,9 +59,11 @@ module.exports = ({pool, sessions, uuidv4, bcrypt, requireAdminLogin}) => {
                     // Assuming you have a 'categories' table with 'id' and 'name'
                     // and a 'course_categories' table with 'course_id' and 'category_id'
                     pool.query(`
-                    INSERT INTO course_categories (course_id, category_id)
-                    SELECT ?, id FROM categories WHERE name IN (?)
-                `, [courseId, categoriesArray], (catError) => {
+                        INSERT INTO course_categories (course_id, category_id)
+                        SELECT ?, id
+                        FROM categories
+                        WHERE name IN (?)
+                    `, [courseId, categoriesArray], (catError) => {
                         if (catError) {
                             console.error('Error adding course categories:', catError);
                             // Consider rolling back the course insertion if category insertion fails
@@ -105,9 +108,11 @@ module.exports = ({pool, sessions, uuidv4, bcrypt, requireAdminLogin}) => {
                     }
                     if (categoriesArray.length > 0) {
                         pool.query(`
-                        INSERT INTO course_categories (course_id, category_id)
-                        SELECT ?, id FROM categories WHERE name IN (?)
-                    `, [courseId, categoriesArray], (insertCatError) => {
+                            INSERT INTO course_categories (course_id, category_id)
+                            SELECT ?, id
+                            FROM categories
+                            WHERE name IN (?)
+                        `, [courseId, categoriesArray], (insertCatError) => {
                             if (insertCatError) {
                                 console.error('Error adding new course categories:', insertCatError);
                                 return res.status(500).json({message: 'Failed to update course categories.'});
@@ -158,8 +163,8 @@ module.exports = ({pool, sessions, uuidv4, bcrypt, requireAdminLogin}) => {
     // --- Student API Endpoints for Admin ---
 
 // GET /api/students: Get all students
-    router.get('/api/students', requireAdminLogin, (req, res) => {
-        pool.query('SELECT id, name, email, phone, registration_date FROM students', (error, results) => {
+    router.get('/students', requireAdminLogin, (req, res) => {
+        pool.query('SELECT id, name, email, created_at FROM students', (error, results) => {
             if (error) {
                 console.error('Error fetching students:', error);
                 return res.status(500).json({message: 'Failed to fetch students.'});
@@ -169,11 +174,11 @@ module.exports = ({pool, sessions, uuidv4, bcrypt, requireAdminLogin}) => {
     });
 
 // POST /api/students: Add a new student
-    router.post('/api/students', requireAdminLogin, (req, res) => {
-        const {name, email, phone} = req.body;
+    router.post('/api/addStudent', requireAdminLogin, (req, res) => {
+        const {name, email, password} = req.body;
         const studentId = uuidv4();
-        pool.query('INSERT INTO students (id, name, email, phone, registration_date) VALUES (?, ?, ?, ?, NOW())',
-            [studentId, name, email, phone], (error) => {
+        pool.query('INSERT INTO students (id, name, email, password, created_at) VALUES (?, ?, ?, ?, NOW())',
+            [studentId, name, email, password], (error) => {
                 if (error) {
                     console.error('Error adding student:', error);
                     if (error.code === 'ER_DUP_ENTRY') {
@@ -181,7 +186,7 @@ module.exports = ({pool, sessions, uuidv4, bcrypt, requireAdminLogin}) => {
                     }
                     return res.status(500).json({message: 'Failed to add student.'});
                 }
-                pool.query('SELECT id, name, email, phone, registration_date FROM students WHERE id = ?', [studentId], (selectError, selectResult) => {
+                pool.query('SELECT id, name, email, password, created_at FROM students WHERE id = ?', [studentId], (selectError, selectResult) => {
                     if (selectError) {
                         return res.status(500).json({message: 'Failed to retrieve added student.'});
                     }
@@ -191,11 +196,11 @@ module.exports = ({pool, sessions, uuidv4, bcrypt, requireAdminLogin}) => {
     });
 
 // PUT /api/students/:id: Update a student by ID
-    router.put('/api/students/:id', requireAdminLogin, (req, res) => {
+    router.put('/api/updateStudent/:id', requireAdminLogin, (req, res) => {
         const studentId = req.params.id;
-        const {name, email, phone} = req.body;
-        pool.query('UPDATE students SET name = ?, email = ?, phone = ? WHERE id = ?',
-            [name, email, phone, studentId], (error, result) => {
+        const {name, email, password} = req.body;
+        pool.query('UPDATE students SET name = ?, email = ?, password = ? WHERE id = ?',
+            [name, email, password, studentId], (error, result) => {
                 if (error) {
                     console.error('Error updating student:', error);
                     if (error.code === 'ER_DUP_ENTRY') {
@@ -206,7 +211,7 @@ module.exports = ({pool, sessions, uuidv4, bcrypt, requireAdminLogin}) => {
                 if (result.affectedRows === 0) {
                     return res.status(404).json({message: 'Student not found.'});
                 }
-                pool.query('SELECT id, name, email, phone, registration_date FROM students WHERE id = ?', [studentId], (selectError, selectResult) => {
+                pool.query('SELECT id, name, email, password, created_at FROM students WHERE id = ?', [studentId], (selectError, selectResult) => {
                     if (selectError) {
                         return res.status(500).json({message: 'Failed to retrieve updated student.'});
                     }
@@ -216,7 +221,7 @@ module.exports = ({pool, sessions, uuidv4, bcrypt, requireAdminLogin}) => {
     });
 
 // DELETE /api/students/:id: Delete a student by ID
-    router.delete('/api/students/:id', requireAdminLogin, (req, res) => {
+    router.delete('/api/deleteStudents/:id', requireAdminLogin, (req, res) => {
         const studentId = req.params.id;
         // Consider deleting related enrollments
         pool.query('DELETE FROM enrollments WHERE student_id = ?', [studentId], (err) => {

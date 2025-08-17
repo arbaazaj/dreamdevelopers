@@ -30,12 +30,23 @@ const pool = mysql.createPool({
 
 // Middleware to check if user is logged in
 const requireLogin = (req, res, next) => {
-    const sessionId = req.cookies && req.cookies.sessionId;
+    let sessionId = req.cookies && req.cookies.sessionId;
+    if (!sessionId) {
+        sessionId = req.headers['x-session-id']; // Check for session ID in headers for mobile apps.
+    }
     if (sessionId && sessions && sessions[sessionId] && sessions[sessionId].user) {
         req.user = sessions[sessionId].user;
         next();
     } else {
-        res.redirect('/login');
+        // Check to ensure req.headers.accept is not undefined before calling indexOf
+        const isApiRequest = (req.headers.accept && req.headers.accept.indexOf('json') > -1) ||
+            (req.headers['content-type'] && req.headers['content-type'].indexOf('json') > -1);
+        // If not logged in, for API requests, send 401. For page requests, redirect.
+        if (isApiRequest) {
+            return res.status(401).json({ message: 'Unauthorized: Session invalid or expired.' });
+        }else {
+            return res.redirect('/login');
+        }
     }
 };
 
@@ -68,9 +79,9 @@ const isAdminLoggedIn = (req) => {
 
 // --- Import Route Files ---
 // Each route file will now export a function that accepts these dependencies
-const adminRoutes = require('./routes/admin')({ pool, sessions, uuidv4, bcrypt, requireAdminLogin });
-const publicRoutes = require('./routes/public')({ pool, isLoggedIn, path, nodemailer });
-const studentRoutes = require('./routes/student')({ pool, sessions, uuidv4, bcrypt, requireLogin, isLoggedIn, path });
+const adminRoutes = require('./routes/admin')({pool, sessions, uuidv4, bcrypt, requireAdminLogin});
+const publicRoutes = require('./routes/public')({pool, isLoggedIn, path, nodemailer});
+const studentRoutes = require('./routes/student')({pool, sessions, uuidv4, bcrypt, requireLogin, isLoggedIn, path});
 
 // --- Use Route ---
 app.use('/api', adminRoutes);

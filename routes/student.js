@@ -37,9 +37,11 @@ module.exports = ({pool, sessions, uuidv4, bcrypt, requireLogin, isLoggedIn, pat
                 const passwordMatch = bcrypt.compareSync(password, user.password);
                 if (passwordMatch) {
                     const sessionId = uuidv4();
-                    sessions[sessionId] = {user: {id: user.id, email: user.email}};
-                    res.cookie('sessionId', sessionId, {httpOnly: true});
-                    return res.status(200).json({message: 'Login successful.', redirect: '/dashboard'});
+                    sessions[sessionId] = {user: {id: user.id, email: user.email, name: user.name}};
+                    // Set the session cookie for web browser
+                    res.cookie('sessionId', sessionId, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000}); // 1 day expiration
+                    // Send the sessionId in json format for mobile app.
+                    return res.status(200).json({ message: 'Login successful.', redirect: '/dashboard', sessionId: sessionId, user: { id: user.id, email: user.email, name: user.name } });
                 } else {
                     return res.status(401).json({message: 'Invalid username or password.'});
                 }
@@ -86,8 +88,10 @@ module.exports = ({pool, sessions, uuidv4, bcrypt, requireLogin, isLoggedIn, pat
         res.redirect('/');
     });
 
+    // User data API endpoint to fetch enrolled courses and schedules.
     router.get('/api/user/data', requireLogin, (req, res) => {
         const studentId = req.user.id;
+        const studentName = req.user.name;
         const query = `
         SELECT
             s.name,
@@ -128,8 +132,10 @@ module.exports = ({pool, sessions, uuidv4, bcrypt, requireLogin, isLoggedIn, pat
 
             res.json({name: results[0]?.name, enrolledCourses});
         });
+        res.json({name: studentName});
     });
 
+    // Dashboard API endpoint to fetch courses with schedules.
     router.get('/api/dashboard', requireLogin, (req, res) => {
         const studentId = req.user.id;
         const query = `
